@@ -4,7 +4,7 @@
   "description": "Polls app for Weekday",
   "main": "index.js",
   "dependencies": {
-    "@weekday/elements": "^0.6.21",
+    "@weekday/elements": "^0.6.23",
     "chroma-js": "^2.1.0",
     "isomorphic-unfetch": "^3.0.0",
     "moment": "^2.24.0",
