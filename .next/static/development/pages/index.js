@@ -295,12 +295,41 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_apollo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next-apollo */ "./node_modules/next-apollo/dist/index.js");
 /* harmony import */ var next_apollo__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(next_apollo__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var apollo_link_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! apollo-link-http */ "./node_modules/apollo-link-http/lib/bundle.esm.js");
+/* harmony import */ var apollo_link_ws__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! apollo-link-ws */ "./node_modules/apollo-link-ws/lib/bundle.esm.js");
+/* harmony import */ var apollo_link__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! apollo-link */ "./node_modules/apollo-link/lib/bundle.esm.js");
+/* harmony import */ var apollo_utilities__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! apollo-utilities */ "./node_modules/apollo-utilities/lib/bundle.esm.js");
+/* harmony import */ var ws__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ws */ "./node_modules/ws/browser.js");
+/* harmony import */ var ws__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(ws__WEBPACK_IMPORTED_MODULE_5__);
 
 
+
+
+
+
+
+var WebSocketClient = __webpack_require__(/*! websocket */ "./node_modules/websocket/lib/browser.js").client;
+
+var wsLink = new apollo_link_ws__WEBPACK_IMPORTED_MODULE_2__["WebSocketLink"]({
+  uri: "ws://localhost:8080/v1/graphql",
+  options: {
+    reconnect: true
+  },
+  webSocketImpl: WebSocketClient
+});
+var httpLink = new apollo_link_http__WEBPACK_IMPORTED_MODULE_1__["HttpLink"]({
+  uri: 'http://localhost:8080/v1/graphql'
+});
+var link = Object(apollo_link__WEBPACK_IMPORTED_MODULE_3__["split"])(function (_ref) {
+  var query = _ref.query;
+
+  var _getMainDefinition = Object(apollo_utilities__WEBPACK_IMPORTED_MODULE_4__["getMainDefinition"])(query),
+      kind = _getMainDefinition.kind,
+      operation = _getMainDefinition.operation;
+
+  return kind === 'OperationDefinition' && operation === 'subscription';
+}, wsLink, httpLink);
 var config = {
-  link: new apollo_link_http__WEBPACK_IMPORTED_MODULE_1__["HttpLink"]({
-    uri: 'http://localhost:8080/v1/graphql'
-  })
+  link: link
 };
 /* harmony default export */ __webpack_exports__["default"] = (Object(next_apollo__WEBPACK_IMPORTED_MODULE_0__["withData"])(config));
 
@@ -10252,6 +10281,48 @@ var HttpLink = (function (_super) {
 
 /***/ }),
 
+/***/ "./node_modules/apollo-link-ws/lib/bundle.esm.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/apollo-link-ws/lib/bundle.esm.js ***!
+  \*******************************************************/
+/*! exports provided: WebSocketLink */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WebSocketLink", function() { return WebSocketLink; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var apollo_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! apollo-link */ "./node_modules/apollo-link/lib/bundle.esm.js");
+/* harmony import */ var subscriptions_transport_ws__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! subscriptions-transport-ws */ "./node_modules/subscriptions-transport-ws/dist/client.js");
+/* harmony import */ var subscriptions_transport_ws__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(subscriptions_transport_ws__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+
+var WebSocketLink = (function (_super) {
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(WebSocketLink, _super);
+    function WebSocketLink(paramsOrClient) {
+        var _this = _super.call(this) || this;
+        if (paramsOrClient instanceof subscriptions_transport_ws__WEBPACK_IMPORTED_MODULE_2__["SubscriptionClient"]) {
+            _this.subscriptionClient = paramsOrClient;
+        }
+        else {
+            _this.subscriptionClient = new subscriptions_transport_ws__WEBPACK_IMPORTED_MODULE_2__["SubscriptionClient"](paramsOrClient.uri, paramsOrClient.options, paramsOrClient.webSocketImpl);
+        }
+        return _this;
+    }
+    WebSocketLink.prototype.request = function (operation) {
+        return this.subscriptionClient.request(operation);
+    };
+    return WebSocketLink;
+}(apollo_link__WEBPACK_IMPORTED_MODULE_1__["ApolloLink"]));
+
+
+//# sourceMappingURL=bundle.esm.js.map
+
+
+/***/ }),
+
 /***/ "./node_modules/apollo-link/lib/bundle.esm.js":
 /*!****************************************************!*\
   !*** ./node_modules/apollo-link/lib/bundle.esm.js ***!
@@ -11463,6 +11534,102 @@ function stripSymbols(data) {
 //# sourceMappingURL=bundle.esm.js.map
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./node_modules/backo2/index.js":
+/*!**************************************!*\
+  !*** ./node_modules/backo2/index.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+/**
+ * Expose `Backoff`.
+ */
+
+module.exports = Backoff;
+
+/**
+ * Initialize backoff timer with `opts`.
+ *
+ * - `min` initial timeout in milliseconds [100]
+ * - `max` max timeout [10000]
+ * - `jitter` [0]
+ * - `factor` [2]
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function Backoff(opts) {
+  opts = opts || {};
+  this.ms = opts.min || 100;
+  this.max = opts.max || 10000;
+  this.factor = opts.factor || 2;
+  this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
+  this.attempts = 0;
+}
+
+/**
+ * Return the backoff duration.
+ *
+ * @return {Number}
+ * @api public
+ */
+
+Backoff.prototype.duration = function(){
+  var ms = this.ms * Math.pow(this.factor, this.attempts++);
+  if (this.jitter) {
+    var rand =  Math.random();
+    var deviation = Math.floor(rand * this.jitter * ms);
+    ms = (Math.floor(rand * 10) & 1) == 0  ? ms - deviation : ms + deviation;
+  }
+  return Math.min(ms, this.max) | 0;
+};
+
+/**
+ * Reset the number of attempts.
+ *
+ * @api public
+ */
+
+Backoff.prototype.reset = function(){
+  this.attempts = 0;
+};
+
+/**
+ * Set the minimum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMin = function(min){
+  this.ms = min;
+};
+
+/**
+ * Set the maximum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMax = function(max){
+  this.max = max;
+};
+
+/**
+ * Set the jitter
+ *
+ * @api public
+ */
+
+Backoff.prototype.setJitter = function(jitter){
+  this.jitter = jitter;
+};
+
+
 
 /***/ }),
 
@@ -18842,6 +19009,354 @@ module.exports = defineProperties;
 
 /***/ }),
 
+/***/ "./node_modules/eventemitter3/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/eventemitter3/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if (true) {
+  module.exports = EventEmitter;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/fast-json-stable-stringify/index.js":
 /*!**********************************************************!*\
   !*** ./node_modules/fast-json-stable-stringify/index.js ***!
@@ -23032,6 +23547,52 @@ function getVisitFn(visitor, kind, isLeaving) {
       }
     }
   }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/graphql/utilities/getOperationAST.mjs":
+/*!************************************************************!*\
+  !*** ./node_modules/graphql/utilities/getOperationAST.mjs ***!
+  \************************************************************/
+/*! exports provided: getOperationAST */
+/***/ (function(__webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOperationAST", function() { return getOperationAST; });
+/* harmony import */ var _language_kinds__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../language/kinds */ "./node_modules/graphql/language/kinds.mjs");
+
+
+/**
+ * Returns an operation AST given a document AST and optionally an operation
+ * name. If a name is not provided, an operation is only returned if only one is
+ * provided in the document.
+ */
+function getOperationAST(documentAST, operationName) {
+  var operation = null;
+
+  for (var _i2 = 0, _documentAST$definiti2 = documentAST.definitions; _i2 < _documentAST$definiti2.length; _i2++) {
+    var definition = _documentAST$definiti2[_i2];
+
+    if (definition.kind === _language_kinds__WEBPACK_IMPORTED_MODULE_0__["Kind"].OPERATION_DEFINITION) {
+      if (!operationName) {
+        // If no operation name was provided, only return an Operation if there
+        // is one defined in the document. Upon encountering the second, return
+        // null.
+        if (operation) {
+          return null;
+        }
+
+        operation = definition;
+      } else if (definition.name && definition.name.value === operationName) {
+        return definition;
+      }
+    }
+  }
+
+  return operation;
 }
 
 
@@ -74594,6 +75155,668 @@ module.exports = __webpack_require__(/*! ./dist/style */ "./node_modules/styled-
 
 /***/ }),
 
+/***/ "./node_modules/subscriptions-transport-ws/dist/client.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/client.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var _global = typeof global !== 'undefined' ? global : (typeof window !== 'undefined' ? window : {});
+var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
+var Backoff = __webpack_require__(/*! backo2 */ "./node_modules/backo2/index.js");
+var eventemitter3_1 = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
+var is_string_1 = __webpack_require__(/*! ./utils/is-string */ "./node_modules/subscriptions-transport-ws/dist/utils/is-string.js");
+var is_object_1 = __webpack_require__(/*! ./utils/is-object */ "./node_modules/subscriptions-transport-ws/dist/utils/is-object.js");
+var printer_1 = __webpack_require__(/*! graphql/language/printer */ "./node_modules/graphql/language/printer.mjs");
+var getOperationAST_1 = __webpack_require__(/*! graphql/utilities/getOperationAST */ "./node_modules/graphql/utilities/getOperationAST.mjs");
+var symbol_observable_1 = __webpack_require__(/*! symbol-observable */ "./node_modules/symbol-observable/es/index.js");
+var protocol_1 = __webpack_require__(/*! ./protocol */ "./node_modules/subscriptions-transport-ws/dist/protocol.js");
+var defaults_1 = __webpack_require__(/*! ./defaults */ "./node_modules/subscriptions-transport-ws/dist/defaults.js");
+var message_types_1 = __webpack_require__(/*! ./message-types */ "./node_modules/subscriptions-transport-ws/dist/message-types.js");
+var SubscriptionClient = (function () {
+    function SubscriptionClient(url, options, webSocketImpl, webSocketProtocols) {
+        var _a = (options || {}), _b = _a.connectionCallback, connectionCallback = _b === void 0 ? undefined : _b, _c = _a.connectionParams, connectionParams = _c === void 0 ? {} : _c, _d = _a.timeout, timeout = _d === void 0 ? defaults_1.WS_TIMEOUT : _d, _e = _a.reconnect, reconnect = _e === void 0 ? false : _e, _f = _a.reconnectionAttempts, reconnectionAttempts = _f === void 0 ? Infinity : _f, _g = _a.lazy, lazy = _g === void 0 ? false : _g, _h = _a.inactivityTimeout, inactivityTimeout = _h === void 0 ? 0 : _h;
+        this.wsImpl = webSocketImpl || NativeWebSocket;
+        if (!this.wsImpl) {
+            throw new Error('Unable to find native implementation, or alternative implementation for WebSocket!');
+        }
+        this.wsProtocols = webSocketProtocols || protocol_1.GRAPHQL_WS;
+        this.connectionCallback = connectionCallback;
+        this.url = url;
+        this.operations = {};
+        this.nextOperationId = 0;
+        this.wsTimeout = timeout;
+        this.unsentMessagesQueue = [];
+        this.reconnect = reconnect;
+        this.reconnecting = false;
+        this.reconnectionAttempts = reconnectionAttempts;
+        this.lazy = !!lazy;
+        this.inactivityTimeout = inactivityTimeout;
+        this.closedByUser = false;
+        this.backoff = new Backoff({ jitter: 0.5 });
+        this.eventEmitter = new eventemitter3_1.EventEmitter();
+        this.middlewares = [];
+        this.client = null;
+        this.maxConnectTimeGenerator = this.createMaxConnectTimeGenerator();
+        this.connectionParams = this.getConnectionParams(connectionParams);
+        if (!this.lazy) {
+            this.connect();
+        }
+    }
+    Object.defineProperty(SubscriptionClient.prototype, "status", {
+        get: function () {
+            if (this.client === null) {
+                return this.wsImpl.CLOSED;
+            }
+            return this.client.readyState;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    SubscriptionClient.prototype.close = function (isForced, closedByUser) {
+        if (isForced === void 0) { isForced = true; }
+        if (closedByUser === void 0) { closedByUser = true; }
+        this.clearInactivityTimeout();
+        if (this.client !== null) {
+            this.closedByUser = closedByUser;
+            if (isForced) {
+                this.clearCheckConnectionInterval();
+                this.clearMaxConnectTimeout();
+                this.clearTryReconnectTimeout();
+                this.unsubscribeAll();
+                this.sendMessage(undefined, message_types_1.default.GQL_CONNECTION_TERMINATE, null);
+            }
+            this.client.close();
+            this.client = null;
+            this.eventEmitter.emit('disconnected');
+            if (!isForced) {
+                this.tryReconnect();
+            }
+        }
+    };
+    SubscriptionClient.prototype.request = function (request) {
+        var _a;
+        var getObserver = this.getObserver.bind(this);
+        var executeOperation = this.executeOperation.bind(this);
+        var unsubscribe = this.unsubscribe.bind(this);
+        var opId;
+        this.clearInactivityTimeout();
+        return _a = {},
+            _a[symbol_observable_1.default] = function () {
+                return this;
+            },
+            _a.subscribe = function (observerOrNext, onError, onComplete) {
+                var observer = getObserver(observerOrNext, onError, onComplete);
+                opId = executeOperation(request, function (error, result) {
+                    if (error === null && result === null) {
+                        if (observer.complete) {
+                            observer.complete();
+                        }
+                    }
+                    else if (error) {
+                        if (observer.error) {
+                            observer.error(error[0]);
+                        }
+                    }
+                    else {
+                        if (observer.next) {
+                            observer.next(result);
+                        }
+                    }
+                });
+                return {
+                    unsubscribe: function () {
+                        if (opId) {
+                            unsubscribe(opId);
+                            opId = null;
+                        }
+                    },
+                };
+            },
+            _a;
+    };
+    SubscriptionClient.prototype.on = function (eventName, callback, context) {
+        var handler = this.eventEmitter.on(eventName, callback, context);
+        return function () {
+            handler.off(eventName, callback, context);
+        };
+    };
+    SubscriptionClient.prototype.onConnected = function (callback, context) {
+        return this.on('connected', callback, context);
+    };
+    SubscriptionClient.prototype.onConnecting = function (callback, context) {
+        return this.on('connecting', callback, context);
+    };
+    SubscriptionClient.prototype.onDisconnected = function (callback, context) {
+        return this.on('disconnected', callback, context);
+    };
+    SubscriptionClient.prototype.onReconnected = function (callback, context) {
+        return this.on('reconnected', callback, context);
+    };
+    SubscriptionClient.prototype.onReconnecting = function (callback, context) {
+        return this.on('reconnecting', callback, context);
+    };
+    SubscriptionClient.prototype.onError = function (callback, context) {
+        return this.on('error', callback, context);
+    };
+    SubscriptionClient.prototype.unsubscribeAll = function () {
+        var _this = this;
+        Object.keys(this.operations).forEach(function (subId) {
+            _this.unsubscribe(subId);
+        });
+    };
+    SubscriptionClient.prototype.applyMiddlewares = function (options) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var queue = function (funcs, scope) {
+                var next = function (error) {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        if (funcs.length > 0) {
+                            var f = funcs.shift();
+                            if (f) {
+                                f.applyMiddleware.apply(scope, [options, next]);
+                            }
+                        }
+                        else {
+                            resolve(options);
+                        }
+                    }
+                };
+                next();
+            };
+            queue(_this.middlewares.slice(), _this);
+        });
+    };
+    SubscriptionClient.prototype.use = function (middlewares) {
+        var _this = this;
+        middlewares.map(function (middleware) {
+            if (typeof middleware.applyMiddleware === 'function') {
+                _this.middlewares.push(middleware);
+            }
+            else {
+                throw new Error('Middleware must implement the applyMiddleware function.');
+            }
+        });
+        return this;
+    };
+    SubscriptionClient.prototype.getConnectionParams = function (connectionParams) {
+        return function () { return new Promise(function (resolve, reject) {
+            if (typeof connectionParams === 'function') {
+                try {
+                    return resolve(connectionParams.call(null));
+                }
+                catch (error) {
+                    return reject(error);
+                }
+            }
+            resolve(connectionParams);
+        }); };
+    };
+    SubscriptionClient.prototype.executeOperation = function (options, handler) {
+        var _this = this;
+        if (this.client === null) {
+            this.connect();
+        }
+        var opId = this.generateOperationId();
+        this.operations[opId] = { options: options, handler: handler };
+        this.applyMiddlewares(options)
+            .then(function (processedOptions) {
+            _this.checkOperationOptions(processedOptions, handler);
+            if (_this.operations[opId]) {
+                _this.operations[opId] = { options: processedOptions, handler: handler };
+                _this.sendMessage(opId, message_types_1.default.GQL_START, processedOptions);
+            }
+        })
+            .catch(function (error) {
+            _this.unsubscribe(opId);
+            handler(_this.formatErrors(error));
+        });
+        return opId;
+    };
+    SubscriptionClient.prototype.getObserver = function (observerOrNext, error, complete) {
+        if (typeof observerOrNext === 'function') {
+            return {
+                next: function (v) { return observerOrNext(v); },
+                error: function (e) { return error && error(e); },
+                complete: function () { return complete && complete(); },
+            };
+        }
+        return observerOrNext;
+    };
+    SubscriptionClient.prototype.createMaxConnectTimeGenerator = function () {
+        var minValue = 1000;
+        var maxValue = this.wsTimeout;
+        return new Backoff({
+            min: minValue,
+            max: maxValue,
+            factor: 1.2,
+        });
+    };
+    SubscriptionClient.prototype.clearCheckConnectionInterval = function () {
+        if (this.checkConnectionIntervalId) {
+            clearInterval(this.checkConnectionIntervalId);
+            this.checkConnectionIntervalId = null;
+        }
+    };
+    SubscriptionClient.prototype.clearMaxConnectTimeout = function () {
+        if (this.maxConnectTimeoutId) {
+            clearTimeout(this.maxConnectTimeoutId);
+            this.maxConnectTimeoutId = null;
+        }
+    };
+    SubscriptionClient.prototype.clearTryReconnectTimeout = function () {
+        if (this.tryReconnectTimeoutId) {
+            clearTimeout(this.tryReconnectTimeoutId);
+            this.tryReconnectTimeoutId = null;
+        }
+    };
+    SubscriptionClient.prototype.clearInactivityTimeout = function () {
+        if (this.inactivityTimeoutId) {
+            clearTimeout(this.inactivityTimeoutId);
+            this.inactivityTimeoutId = null;
+        }
+    };
+    SubscriptionClient.prototype.setInactivityTimeout = function () {
+        var _this = this;
+        if (this.inactivityTimeout > 0 && Object.keys(this.operations).length === 0) {
+            this.inactivityTimeoutId = setTimeout(function () {
+                if (Object.keys(_this.operations).length === 0) {
+                    _this.close();
+                }
+            }, this.inactivityTimeout);
+        }
+    };
+    SubscriptionClient.prototype.checkOperationOptions = function (options, handler) {
+        var query = options.query, variables = options.variables, operationName = options.operationName;
+        if (!query) {
+            throw new Error('Must provide a query.');
+        }
+        if (!handler) {
+            throw new Error('Must provide an handler.');
+        }
+        if ((!is_string_1.default(query) && !getOperationAST_1.getOperationAST(query, operationName)) ||
+            (operationName && !is_string_1.default(operationName)) ||
+            (variables && !is_object_1.default(variables))) {
+            throw new Error('Incorrect option types. query must be a string or a document,' +
+                '`operationName` must be a string, and `variables` must be an object.');
+        }
+    };
+    SubscriptionClient.prototype.buildMessage = function (id, type, payload) {
+        var payloadToReturn = payload && payload.query ? __assign({}, payload, { query: typeof payload.query === 'string' ? payload.query : printer_1.print(payload.query) }) :
+            payload;
+        return {
+            id: id,
+            type: type,
+            payload: payloadToReturn,
+        };
+    };
+    SubscriptionClient.prototype.formatErrors = function (errors) {
+        if (Array.isArray(errors)) {
+            return errors;
+        }
+        if (errors && errors.errors) {
+            return this.formatErrors(errors.errors);
+        }
+        if (errors && errors.message) {
+            return [errors];
+        }
+        return [{
+                name: 'FormatedError',
+                message: 'Unknown error',
+                originalError: errors,
+            }];
+    };
+    SubscriptionClient.prototype.sendMessage = function (id, type, payload) {
+        this.sendMessageRaw(this.buildMessage(id, type, payload));
+    };
+    SubscriptionClient.prototype.sendMessageRaw = function (message) {
+        switch (this.status) {
+            case this.wsImpl.OPEN:
+                var serializedMessage = JSON.stringify(message);
+                try {
+                    JSON.parse(serializedMessage);
+                }
+                catch (e) {
+                    this.eventEmitter.emit('error', new Error("Message must be JSON-serializable. Got: " + message));
+                }
+                this.client.send(serializedMessage);
+                break;
+            case this.wsImpl.CONNECTING:
+                this.unsentMessagesQueue.push(message);
+                break;
+            default:
+                if (!this.reconnecting) {
+                    this.eventEmitter.emit('error', new Error('A message was not sent because socket is not connected, is closing or ' +
+                        'is already closed. Message was: ' + JSON.stringify(message)));
+                }
+        }
+    };
+    SubscriptionClient.prototype.generateOperationId = function () {
+        return String(++this.nextOperationId);
+    };
+    SubscriptionClient.prototype.tryReconnect = function () {
+        var _this = this;
+        if (!this.reconnect || this.backoff.attempts >= this.reconnectionAttempts) {
+            return;
+        }
+        if (!this.reconnecting) {
+            Object.keys(this.operations).forEach(function (key) {
+                _this.unsentMessagesQueue.push(_this.buildMessage(key, message_types_1.default.GQL_START, _this.operations[key].options));
+            });
+            this.reconnecting = true;
+        }
+        this.clearTryReconnectTimeout();
+        var delay = this.backoff.duration();
+        this.tryReconnectTimeoutId = setTimeout(function () {
+            _this.connect();
+        }, delay);
+    };
+    SubscriptionClient.prototype.flushUnsentMessagesQueue = function () {
+        var _this = this;
+        this.unsentMessagesQueue.forEach(function (message) {
+            _this.sendMessageRaw(message);
+        });
+        this.unsentMessagesQueue = [];
+    };
+    SubscriptionClient.prototype.checkConnection = function () {
+        if (this.wasKeepAliveReceived) {
+            this.wasKeepAliveReceived = false;
+            return;
+        }
+        if (!this.reconnecting) {
+            this.close(false, true);
+        }
+    };
+    SubscriptionClient.prototype.checkMaxConnectTimeout = function () {
+        var _this = this;
+        this.clearMaxConnectTimeout();
+        this.maxConnectTimeoutId = setTimeout(function () {
+            if (_this.status !== _this.wsImpl.OPEN) {
+                _this.reconnecting = true;
+                _this.close(false, true);
+            }
+        }, this.maxConnectTimeGenerator.duration());
+    };
+    SubscriptionClient.prototype.connect = function () {
+        var _this = this;
+        this.client = new this.wsImpl(this.url, this.wsProtocols);
+        this.checkMaxConnectTimeout();
+        this.client.onopen = function () { return __awaiter(_this, void 0, void 0, function () {
+            var connectionParams, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.status === this.wsImpl.OPEN)) return [3, 4];
+                        this.clearMaxConnectTimeout();
+                        this.closedByUser = false;
+                        this.eventEmitter.emit(this.reconnecting ? 'reconnecting' : 'connecting');
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4, this.connectionParams()];
+                    case 2:
+                        connectionParams = _a.sent();
+                        this.sendMessage(undefined, message_types_1.default.GQL_CONNECTION_INIT, connectionParams);
+                        this.flushUnsentMessagesQueue();
+                        return [3, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        this.sendMessage(undefined, message_types_1.default.GQL_CONNECTION_ERROR, error_1);
+                        this.flushUnsentMessagesQueue();
+                        return [3, 4];
+                    case 4: return [2];
+                }
+            });
+        }); };
+        this.client.onclose = function () {
+            if (!_this.closedByUser) {
+                _this.close(false, false);
+            }
+        };
+        this.client.onerror = function (err) {
+            _this.eventEmitter.emit('error', err);
+        };
+        this.client.onmessage = function (_a) {
+            var data = _a.data;
+            _this.processReceivedData(data);
+        };
+    };
+    SubscriptionClient.prototype.processReceivedData = function (receivedData) {
+        var parsedMessage;
+        var opId;
+        try {
+            parsedMessage = JSON.parse(receivedData);
+            opId = parsedMessage.id;
+        }
+        catch (e) {
+            throw new Error("Message must be JSON-parseable. Got: " + receivedData);
+        }
+        if ([message_types_1.default.GQL_DATA,
+            message_types_1.default.GQL_COMPLETE,
+            message_types_1.default.GQL_ERROR,
+        ].indexOf(parsedMessage.type) !== -1 && !this.operations[opId]) {
+            this.unsubscribe(opId);
+            return;
+        }
+        switch (parsedMessage.type) {
+            case message_types_1.default.GQL_CONNECTION_ERROR:
+                if (this.connectionCallback) {
+                    this.connectionCallback(parsedMessage.payload);
+                }
+                break;
+            case message_types_1.default.GQL_CONNECTION_ACK:
+                this.eventEmitter.emit(this.reconnecting ? 'reconnected' : 'connected');
+                this.reconnecting = false;
+                this.backoff.reset();
+                this.maxConnectTimeGenerator.reset();
+                if (this.connectionCallback) {
+                    this.connectionCallback();
+                }
+                break;
+            case message_types_1.default.GQL_COMPLETE:
+                this.operations[opId].handler(null, null);
+                delete this.operations[opId];
+                break;
+            case message_types_1.default.GQL_ERROR:
+                this.operations[opId].handler(this.formatErrors(parsedMessage.payload), null);
+                delete this.operations[opId];
+                break;
+            case message_types_1.default.GQL_DATA:
+                var parsedPayload = !parsedMessage.payload.errors ?
+                    parsedMessage.payload : __assign({}, parsedMessage.payload, { errors: this.formatErrors(parsedMessage.payload.errors) });
+                this.operations[opId].handler(null, parsedPayload);
+                break;
+            case message_types_1.default.GQL_CONNECTION_KEEP_ALIVE:
+                var firstKA = typeof this.wasKeepAliveReceived === 'undefined';
+                this.wasKeepAliveReceived = true;
+                if (firstKA) {
+                    this.checkConnection();
+                }
+                if (this.checkConnectionIntervalId) {
+                    clearInterval(this.checkConnectionIntervalId);
+                    this.checkConnection();
+                }
+                this.checkConnectionIntervalId = setInterval(this.checkConnection.bind(this), this.wsTimeout);
+                break;
+            default:
+                throw new Error('Invalid message type!');
+        }
+    };
+    SubscriptionClient.prototype.unsubscribe = function (opId) {
+        if (this.operations[opId]) {
+            delete this.operations[opId];
+            this.setInactivityTimeout();
+            this.sendMessage(opId, message_types_1.default.GQL_STOP, undefined);
+        }
+    };
+    return SubscriptionClient;
+}());
+exports.SubscriptionClient = SubscriptionClient;
+//# sourceMappingURL=client.js.map
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/subscriptions-transport-ws/dist/defaults.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/defaults.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var WS_TIMEOUT = 30000;
+exports.WS_TIMEOUT = WS_TIMEOUT;
+//# sourceMappingURL=defaults.js.map
+
+/***/ }),
+
+/***/ "./node_modules/subscriptions-transport-ws/dist/message-types.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/message-types.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var MessageTypes = (function () {
+    function MessageTypes() {
+        throw new Error('Static Class');
+    }
+    MessageTypes.GQL_CONNECTION_INIT = 'connection_init';
+    MessageTypes.GQL_CONNECTION_ACK = 'connection_ack';
+    MessageTypes.GQL_CONNECTION_ERROR = 'connection_error';
+    MessageTypes.GQL_CONNECTION_KEEP_ALIVE = 'ka';
+    MessageTypes.GQL_CONNECTION_TERMINATE = 'connection_terminate';
+    MessageTypes.GQL_START = 'start';
+    MessageTypes.GQL_DATA = 'data';
+    MessageTypes.GQL_ERROR = 'error';
+    MessageTypes.GQL_COMPLETE = 'complete';
+    MessageTypes.GQL_STOP = 'stop';
+    MessageTypes.SUBSCRIPTION_START = 'subscription_start';
+    MessageTypes.SUBSCRIPTION_DATA = 'subscription_data';
+    MessageTypes.SUBSCRIPTION_SUCCESS = 'subscription_success';
+    MessageTypes.SUBSCRIPTION_FAIL = 'subscription_fail';
+    MessageTypes.SUBSCRIPTION_END = 'subscription_end';
+    MessageTypes.INIT = 'init';
+    MessageTypes.INIT_SUCCESS = 'init_success';
+    MessageTypes.INIT_FAIL = 'init_fail';
+    MessageTypes.KEEP_ALIVE = 'keepalive';
+    return MessageTypes;
+}());
+exports.default = MessageTypes;
+//# sourceMappingURL=message-types.js.map
+
+/***/ }),
+
+/***/ "./node_modules/subscriptions-transport-ws/dist/protocol.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/protocol.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GRAPHQL_WS = 'graphql-ws';
+exports.GRAPHQL_WS = GRAPHQL_WS;
+var GRAPHQL_SUBSCRIPTIONS = 'graphql-subscriptions';
+exports.GRAPHQL_SUBSCRIPTIONS = GRAPHQL_SUBSCRIPTIONS;
+//# sourceMappingURL=protocol.js.map
+
+/***/ }),
+
+/***/ "./node_modules/subscriptions-transport-ws/dist/utils/is-object.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/utils/is-object.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isObject(value) {
+    return ((value !== null) && (typeof value === 'object'));
+}
+exports.default = isObject;
+//# sourceMappingURL=is-object.js.map
+
+/***/ }),
+
+/***/ "./node_modules/subscriptions-transport-ws/dist/utils/is-string.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/subscriptions-transport-ws/dist/utils/is-string.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isString(value) {
+    return typeof value === 'string';
+}
+exports.default = isString;
+//# sourceMappingURL=is-string.js.map
+
+/***/ }),
+
 /***/ "./node_modules/symbol-observable/es/index.js":
 /*!****************************************************!*\
   !*** ./node_modules/symbol-observable/es/index.js ***!
@@ -75837,6 +77060,108 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./node_modules/websocket/lib/browser.js":
+/*!***********************************************!*\
+  !*** ./node_modules/websocket/lib/browser.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var _global = (function () {
+	if (!this && typeof global !== 'undefined') {
+		return global;
+	}
+	return this;
+})();
+var NativeWebSocket = _global.WebSocket || _global.MozWebSocket;
+var websocket_version = __webpack_require__(/*! ./version */ "./node_modules/websocket/lib/version.js");
+
+
+/**
+ * Expose a W3C WebSocket class with just one or two arguments.
+ */
+function W3CWebSocket(uri, protocols) {
+	var native_instance;
+
+	if (protocols) {
+		native_instance = new NativeWebSocket(uri, protocols);
+	}
+	else {
+		native_instance = new NativeWebSocket(uri);
+	}
+
+	/**
+	 * 'native_instance' is an instance of nativeWebSocket (the browser's WebSocket
+	 * class). Since it is an Object it will be returned as it is when creating an
+	 * instance of W3CWebSocket via 'new W3CWebSocket()'.
+	 *
+	 * ECMAScript 5: http://bclary.com/2004/11/07/#a-13.2.2
+	 */
+	return native_instance;
+}
+if (NativeWebSocket) {
+	['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'].forEach(function(prop) {
+		Object.defineProperty(W3CWebSocket, prop, {
+			get: function() { return NativeWebSocket[prop]; }
+		});
+	});
+}
+
+/**
+ * Module exports.
+ */
+module.exports = {
+    'w3cwebsocket' : NativeWebSocket ? W3CWebSocket : null,
+    'version'      : websocket_version
+};
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/websocket/lib/version.js":
+/*!***********************************************!*\
+  !*** ./node_modules/websocket/lib/version.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ../package.json */ "./node_modules/websocket/package.json").version;
+
+
+/***/ }),
+
+/***/ "./node_modules/websocket/package.json":
+/*!*********************************************!*\
+  !*** ./node_modules/websocket/package.json ***!
+  \*********************************************/
+/*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, browser, bugs, bundleDependencies, config, contributors, dependencies, deprecated, description, devDependencies, directories, engines, homepage, keywords, license, main, name, repository, scripts, version, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"_from\":\"websocket\",\"_id\":\"websocket@1.0.30\",\"_inBundle\":false,\"_integrity\":\"sha512-aO6klgaTdSMkhfl5VVJzD5fm+Srhh5jLYbS15+OiI1sN6h/RU/XW6WN9J1uVIpUKNmsTvT3Hs35XAFjn9NMfOw==\",\"_location\":\"/websocket\",\"_phantomChildren\":{},\"_requested\":{\"type\":\"tag\",\"registry\":true,\"raw\":\"websocket\",\"name\":\"websocket\",\"escapedName\":\"websocket\",\"rawSpec\":\"\",\"saveSpec\":null,\"fetchSpec\":\"latest\"},\"_requiredBy\":[\"#USER\",\"/\"],\"_resolved\":\"https://registry.npmjs.org/websocket/-/websocket-1.0.30.tgz\",\"_shasum\":\"91d3bd00c3d43e916f0cf962f8f8c451bb0b2373\",\"_spec\":\"websocket\",\"_where\":\"/Users/joduplessis/Work/Weekday/polls\",\"author\":{\"name\":\"Brian McKelvey\",\"email\":\"theturtle32@gmail.com\",\"url\":\"https://github.com/theturtle32\"},\"browser\":\"lib/browser.js\",\"bugs\":{\"url\":\"https://github.com/theturtle32/WebSocket-Node/issues\"},\"bundleDependencies\":false,\"config\":{\"verbose\":false},\"contributors\":[{\"name\":\"Iñaki Baz Castillo\",\"email\":\"ibc@aliax.net\",\"url\":\"http://dev.sipdoc.net\"}],\"dependencies\":{\"debug\":\"^2.2.0\",\"nan\":\"^2.14.0\",\"typedarray-to-buffer\":\"^3.1.5\",\"yaeti\":\"^0.0.6\"},\"deprecated\":false,\"description\":\"Websocket Client & Server Library implementing the WebSocket protocol as specified in RFC 6455.\",\"devDependencies\":{\"buffer-equal\":\"^1.0.0\",\"faucet\":\"^0.0.1\",\"gulp\":\"^4.0.2\",\"gulp-jshint\":\"^2.0.4\",\"jshint\":\"^2.0.0\",\"jshint-stylish\":\"^2.2.1\",\"tape\":\"^4.9.1\"},\"directories\":{\"lib\":\"./lib\"},\"engines\":{\"node\":\">=0.10.0\"},\"homepage\":\"https://github.com/theturtle32/WebSocket-Node\",\"keywords\":[\"websocket\",\"websockets\",\"socket\",\"networking\",\"comet\",\"push\",\"RFC-6455\",\"realtime\",\"server\",\"client\"],\"license\":\"Apache-2.0\",\"main\":\"index\",\"name\":\"websocket\",\"repository\":{\"type\":\"git\",\"url\":\"git+https://github.com/theturtle32/WebSocket-Node.git\"},\"scripts\":{\"gulp\":\"gulp\",\"install\":\"(node-gyp rebuild 2> builderror.log) || (exit 0)\",\"test\":\"faucet test/unit\"},\"version\":\"1.0.30\"}");
+
+/***/ }),
+
+/***/ "./node_modules/ws/browser.js":
+/*!************************************!*\
+  !*** ./node_modules/ws/browser.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function() {
+  throw new Error(
+    'ws does not work in the browser. Browser clients must use the native ' +
+      'WebSocket object'
+  );
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/zen-observable-ts/lib/bundle.esm.js":
 /*!**********************************************************!*\
   !*** ./node_modules/zen-observable-ts/lib/bundle.esm.js ***!
@@ -76531,8 +77856,18 @@ var _jsxFileName = "/Users/joduplessis/Work/Weekday/polls/pages/index.js";
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement;
 
-function _templateObject4() {
+function _templateObject5() {
   var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_2__["default"])(["\n    \tquery {\n    \t  polls {\n    \t    id\n    \t    title\n          description\n          user_id\n          channel_id\n          expiry\n          questions\n          answers {\n            question_id\n            user_id\n          }\n    \t  }\n    \t}\n    "]);
+
+  _templateObject5 = function _templateObject5() {
+    return data;
+  };
+
+  return data;
+}
+
+function _templateObject4() {
+  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_2__["default"])(["\n      subscription getPolls {\n        polls {\n    \t    id\n    \t    title\n          description\n          user_id\n          channel_id\n          expiry\n          questions\n          answers {\n            question_id\n            user_id\n          }\n    \t  }\n      }\n    "]);
 
   _templateObject4 = function _templateObject4() {
     return data;
@@ -76613,6 +77948,15 @@ function Index(props) {
       deletePoll = _useMutation6[0],
       deleteData = _useMutation6[1];
 
+  var _useSubscription = Object(_apollo_react_hooks__WEBPACK_IMPORTED_MODULE_13__["useSubscription"])(graphql_tag__WEBPACK_IMPORTED_MODULE_9___default()(_templateObject4())),
+      loading = _useSubscription.loading,
+      error = _useSubscription.error,
+      data = _useSubscription.data;
+
+  if (data) {
+    console.log(data.polls[0]);
+  }
+
   Object(react__WEBPACK_IMPORTED_MODULE_4__["useEffect"])(function () {
     // const { router: { query: { payload } }} = props;
     var payload = btoa(_babel_runtime_corejs2_core_js_json_stringify__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -76622,25 +77966,25 @@ function Index(props) {
     var parsedPayload = JSON.parse(atob(payload));
     setUserId(parsedPayload.userId);
     setChannelId(parsedPayload.channelId);
-    setQuery(graphql_tag__WEBPACK_IMPORTED_MODULE_9___default()(_templateObject4()));
+    setQuery(graphql_tag__WEBPACK_IMPORTED_MODULE_9___default()(_templateObject5()));
   }, []);
   return __jsx(react__WEBPACK_IMPORTED_MODULE_4___default.a.Fragment, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 84
+      lineNumber: 107
     },
     __self: this
   }, __jsx(next_head__WEBPACK_IMPORTED_MODULE_6___default.a, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 85
+      lineNumber: 108
     },
     __self: this
   }, __jsx("title", {
     className: "jsx-1390389061",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 86
+      lineNumber: 109
     },
     __self: this
   }, "Polls"), __jsx("meta", {
@@ -76649,7 +77993,7 @@ function Index(props) {
     className: "jsx-1390389061",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 87
+      lineNumber: 110
     },
     __self: this
   }), __jsx("link", {
@@ -76658,7 +78002,7 @@ function Index(props) {
     className: "jsx-1390389061",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88
+      lineNumber: 111
     },
     __self: this
   }), __jsx("link", {
@@ -76667,24 +78011,24 @@ function Index(props) {
     className: "jsx-1390389061",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 89
+      lineNumber: 112
     },
     __self: this
   })), __jsx(styled_jsx_style__WEBPACK_IMPORTED_MODULE_3___default.a, {
     id: "1390389061",
     __self: this
-  }, "*{margin:0px;padding:0px;}body{background:white;}.container{background:white;width:100%;height:100%;position:absolute;left:0px;top:0px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-align-content:center;-ms-flex-line-pack:center;align-content:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}.error{position:absolute;top:0px;left:0px;width:100%;}.polls-listing-container{-webkit-flex:1;-ms-flex:1;flex:1;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-content:center;-ms-flex-line-pack:center;align-content:center;-webkit-box-pack:start;-webkit-justify-content:flex-start;-ms-flex-pack:start;justify-content:flex-start;padding:20px;}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9qb2R1cGxlc3Npcy9Xb3JrL1dlZWtkYXkvcG9sbHMvcGFnZXMvaW5kZXguanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBMkZ5QixBQUdzQixBQUtNLEFBSUEsQUFhQyxBQU9YLFdBNUJLLE1BS2QsQUFJYSxDQWFILEtBckJWLEdBc0JXLEVBYkcsS0FtQkMsRUFMRixLQWJPLE1BY3BCLFlBYlcsU0FDRCxRQUNLLGdDQWdCUywwQ0FmRixvQ0FnQkQsNkRBZkUsZ0NBZ0JBLDRDQWZFLGdDQWdCSSxtRUFmN0Isc0NBZ0JlLGFBQ2YiLCJmaWxlIjoiL1VzZXJzL2pvZHVwbGVzc2lzL1dvcmsvV2Vla2RheS9wb2xscy9wYWdlcy9pbmRleC5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnXG5pbXBvcnQgeyB1c2VSb3V0ZXIsIHdpdGhSb3V0ZXIgfSBmcm9tICduZXh0L3JvdXRlcidcbmltcG9ydCBIZWFkIGZyb20gJ25leHQvaGVhZCdcbmltcG9ydCBmZXRjaCBmcm9tICdpc29tb3JwaGljLXVuZmV0Y2gnXG5pbXBvcnQgeyBCdXR0b24sIEVycm9yLCBMb2FkaW5nLCBOb3RpZmljYXRpb24sIFNwaW5uZXIgfSBmcm9tICdAd2Vla2RheS9lbGVtZW50cydcbmltcG9ydCBncWwgZnJvbSAnZ3JhcGhxbC10YWcnXG5pbXBvcnQgeyBRdWVyeSB9IGZyb20gJ3JlYWN0LWFwb2xsbydcbmltcG9ydCB3aXRoRGF0YSBmcm9tICcuLi9jb25maWcnXG5pbXBvcnQgUG9sbENvbXBvbmVudCBmcm9tICcuLi9jb21wb25lbnRzL3BvbGwuY29tcG9uZW50J1xuaW1wb3J0IHsgdXNlTXV0YXRpb24gfSBmcm9tICdAYXBvbGxvL3JlYWN0LWhvb2tzJ1xuXG5jb25zdCBERUxFVEVfUE9MTCA9IGdxbGBcbiAgbXV0YXRpb24gZGVsZXRlX3BvbGxzKCRpZDogSW50KSB7XG4gICAgZGVsZXRlX3BvbGxzKFxuICAgICAgd2hlcmU6IHtpZDoge19lcTogJGlkfX1cbiAgICApIHtcbiAgICAgIGFmZmVjdGVkX3Jvd3NcbiAgICB9XG4gIH1cbmA7XG5cbmNvbnN0IFVQREFURV9QT0xMID0gZ3FsYFxuICBtdXRhdGlvbiB1cGRhdGVfcG9sbHMoJGlkOiBJbnQsICRjaGFuZ2VzOiBwb2xsc19zZXRfaW5wdXQpIHtcbiAgICB1cGRhdGVfcG9sbHMoXG4gICAgICB3aGVyZToge2lkOiB7X2VxOiAkaWR9fSxcbiAgICAgIF9zZXQ6ICRjaGFuZ2VzXG4gICAgKSB7XG4gICAgICBhZmZlY3RlZF9yb3dzXG4gICAgICByZXR1cm5pbmcge1xuICAgICAgICBpZFxuICAgICAgICB0aXRsZVxuICAgICAgICBkZXNjcmlwdGlvblxuICAgICAgfVxuICAgIH1cbiAgfVxuYDtcblxuY29uc3QgQUREX1BPTEwgPSBncWxgXG4gIG11dGF0aW9uIGFkZF9wb2xsKCRvYmplY3RzOiBbcG9sbHNfaW5zZXJ0X2lucHV0IV0hKSB7XG4gICAgaW5zZXJ0X3BvbGxzKG9iamVjdHM6ICRvYmplY3RzKSB7XG4gICAgICByZXR1cm5pbmcge1xuICAgICAgICBpZFxuICAgICAgICB0aXRsZVxuICAgICAgfVxuICAgIH1cbiAgfVxuYDtcblxuZnVuY3Rpb24gSW5kZXgocHJvcHMpIHtcbiAgY29uc3QgW3F1ZXJ5LCBzZXRRdWVyeV0gPSB1c2VTdGF0ZShudWxsKVxuICBjb25zdCBbdXNlcklkLCBzZXRVc2VySWRdID0gdXNlU3RhdGUoJycpXG4gIGNvbnN0IFtjaGFubmVsSWQsIHNldENoYW5uZWxJZF0gPSB1c2VTdGF0ZSgnJylcbiAgY29uc3QgW2FkZFBvbGwsIGFkZERhdGFdID0gdXNlTXV0YXRpb24oQUREX1BPTEwpXG4gIGNvbnN0IFt1cGRhdGVQb2xsLCB1cGRhdGVEYXRhXSA9IHVzZU11dGF0aW9uKFVQREFURV9QT0xMKVxuICBjb25zdCBbZGVsZXRlUG9sbCwgZGVsZXRlRGF0YV0gPSB1c2VNdXRhdGlvbihERUxFVEVfUE9MTClcblxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIC8vIGNvbnN0IHsgcm91dGVyOiB7IHF1ZXJ5OiB7IHBheWxvYWQgfSB9fSA9IHByb3BzO1xuICAgIGNvbnN0IHBheWxvYWQgPSBidG9hKEpTT04uc3RyaW5naWZ5KHsgdXNlcklkOiAnNWRiN2UzYzk4NDc2MjQyMTU0ZDQzMTgxJywgY2hhbm5lbElkOiAnNWRiODdmMDRkYjA1OWE2ZDhkYzhkMDY4JyB9KSlcbiAgICBjb25zdCBwYXJzZWRQYXlsb2FkID0gSlNPTi5wYXJzZShhdG9iKHBheWxvYWQpKVxuXG4gICAgc2V0VXNlcklkKHBhcnNlZFBheWxvYWQudXNlcklkKVxuICAgIHNldENoYW5uZWxJZChwYXJzZWRQYXlsb2FkLmNoYW5uZWxJZClcbiAgICBzZXRRdWVyeShncWxgXG4gICAgXHRxdWVyeSB7XG4gICAgXHQgIHBvbGxzIHtcbiAgICBcdCAgICBpZFxuICAgIFx0ICAgIHRpdGxlXG4gICAgICAgICAgZGVzY3JpcHRpb25cbiAgICAgICAgICB1c2VyX2lkXG4gICAgICAgICAgY2hhbm5lbF9pZFxuICAgICAgICAgIGV4cGlyeVxuICAgICAgICAgIHF1ZXN0aW9uc1xuICAgICAgICAgIGFuc3dlcnMge1xuICAgICAgICAgICAgcXVlc3Rpb25faWRcbiAgICAgICAgICAgIHVzZXJfaWRcbiAgICAgICAgICB9XG4gICAgXHQgIH1cbiAgICBcdH1cbiAgICBgKVxuICB9LCBbXSlcblxuICByZXR1cm4gKFxuICAgIDxSZWFjdC5GcmFnbWVudD5cbiAgICAgIDxIZWFkPlxuICAgICAgICA8dGl0bGU+UG9sbHM8L3RpdGxlPlxuICAgICAgICA8bWV0YSBuYW1lPVwidmlld3BvcnRcIiBjb250ZW50PVwiaW5pdGlhbC1zY2FsZT0xLjAsIHdpZHRoPWRldmljZS13aWR0aFwiIC8+XG4gICAgICAgIDxsaW5rIGhyZWY9XCIvc3RhdGljL2Nzcy9zdHlsZXMuY3NzXCIgcmVsPVwic3R5bGVzaGVldFwiIC8+XG4gICAgICAgIDxsaW5rIGhyZWY9XCIvc3RhdGljL2ltYWdlcy9mYXZpY29uLnBuZ1wiIHJlbD1cInNob3J0Y3V0IGljb25cIiAvPlxuICAgICAgPC9IZWFkPlxuXG4gICAgICA8c3R5bGUgZ2xvYmFsIGpzeD57YFxuICAgICAgICAqIHtcbiAgICAgICAgICBtYXJnaW46IDBweDtcbiAgICAgICAgICBwYWRkaW5nOiAwcHg7XG4gICAgICAgIH1cblxuICAgICAgICBib2R5IHtcbiAgICAgICAgICBiYWNrZ3JvdW5kOiB3aGl0ZTtcbiAgICAgICAgfVxuXG4gICAgICAgIC5jb250YWluZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHdoaXRlO1xuICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICAgIHRvcDogMHB4O1xuICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7XG4gICAgICAgICAgYWxpZ24tY29udGVudDogY2VudGVyO1xuICAgICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB9XG5cbiAgICAgICAgLmVycm9yIHtcbiAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgdG9wOiAwcHg7XG4gICAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICB9XG5cbiAgICAgICAgLnBvbGxzLWxpc3RpbmctY29udGFpbmVyIHtcbiAgICAgICAgICBmbGV4OiAxO1xuICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICAgIGFsaWduLWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGZsZXgtc3RhcnQ7XG4gICAgICAgICAgcGFkZGluZzogMjBweDtcbiAgICAgICAgfVxuICAgICAgYH08L3N0eWxlPlxuXG4gICAgICB7cXVlcnkgJiZcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb250YWluZXIgY29sdW1uXCI+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJwb2xscy1saXN0aW5nLWNvbnRhaW5lclwiPlxuXG4gICAgICAgICAgICA8UXVlcnlcbiAgICAgICAgICAgICAgcXVlcnk9e3F1ZXJ5fVxuICAgICAgICAgICAgICBmZXRjaFBvbGljeT17J2NhY2hlLWFuZC1uZXR3b3JrJ30+XG4gICAgICAgICAgICAgIHsoeyBsb2FkaW5nLCBkYXRhLCBlcnJvciB9KSA9PiB7XG4gICAgICAgICAgICAgICAgaWYgKGxvYWRpbmcpIHJldHVybiA8U3Bpbm5lciAvPlxuICAgICAgICAgICAgICAgIGlmIChlcnJvcikgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPVwiZXJyb3JcIj48RXJyb3IgbWVzc2FnZT1cIkVycm9yIGxvYWRpbmcgcG9sbHNcIiAvPjwvZGl2PlxuXG5cbiAgICAgICAgICAgICAgICAvLyBJZiBubyBwb2xscyBleGlzdFxuICAgICAgICAgICAgICAgIGlmIChkYXRhLnBvbGxzLmxlbmd0aCA9PSAwKSB7XG4gICAgICAgICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICAgICAgICA8UmVhY3QuRnJhZ21lbnQ+XG4gICAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9XCIuLi9zdGF0aWMvaW1hZ2VzL25vLXBvbGxzLnBuZ1wiIHdpZHRoPVwiNjAlXCIgY2xhc3NOYW1lPVwibWItMzBcIi8+XG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJoMyBtYi0yMCBwbC0yMCBwci0yMCBjb2xvci1kMiB0ZXh0LWNlbnRlclwiPlRoZXJlIGFyZSBubyBwb2xsczwvZGl2PlxuICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaDUgbWItMjAgcGwtMjAgcHItMjAgY29sb3ItZDAgdGV4dC1jZW50ZXJcIj5UaGVyZSBhcmUgbm8gcG9sbHMgZm9yIHRoaXMgY2hhbm5lbC4gQ2xpY2sgb24gdGhlIGJ1dHRvbiBiZWxvdyB0byBjcmVhdGUgeW91ciBmaXJzdCBwb2xsLjwvZGl2PlxuICAgICAgICAgICAgICAgICAgICA8L1JlYWN0LkZyYWdtZW50PlxuICAgICAgICAgICAgICAgICAgKVxuICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgIC8vIElmIHRoZXJlIGFyZVxuICAgICAgICAgICAgICAgIHJldHVybiBkYXRhLnBvbGxzLm1hcCgocG9sbCwgaW5kZXgpID0+IHtcbiAgICAgICAgICAgICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICAgICAgICAgIDxQb2xsQ29tcG9uZW50XG4gICAgICAgICAgICAgICAgICAgICAga2V5PXtpbmRleH1cbiAgICAgICAgICAgICAgICAgICAgICBleHBpcnk9e3BvbGwuZXhwaXJ5fVxuICAgICAgICAgICAgICAgICAgICAgIHRpdGxlPXtwb2xsLnRpdGxlfVxuICAgICAgICAgICAgICAgICAgICAgIHVzZXJJZD17cG9sbC51c2VyX2lkfVxuICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRVc2VySWQ9e3VzZXJJZH1cbiAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj17cG9sbC5kZXNjcmlwdGlvbn1cbiAgICAgICAgICAgICAgICAgICAgICBxdWVzdGlvbnM9e3BvbGwucXVlc3Rpb25zfVxuICAgICAgICAgICAgICAgICAgICAgIGFuc3dlcnM9e3BvbGwuYW5zd2Vyc31cbiAgICAgICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICAgIClcbiAgICAgICAgICAgICAgICB9KVxuICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgPC9RdWVyeT5cblxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyb3cganVzdGlmeS1jb250ZW50LWNlbnRlciBtdC0zMCB3LTEwMFwiPlxuICAgICAgICAgICAgICA8QnV0dG9uXG4gICAgICAgICAgICAgICAgc2l6ZT1cInNtYWxsXCJcbiAgICAgICAgICAgICAgICB0aGVtZT1cImJsdWUtYm9yZGVyXCJcbiAgICAgICAgICAgICAgICB0ZXh0PVwiQ3JlYXRlIGEgcG9sbFwiXG4gICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gYWRkUG9sbCh7IHZhcmlhYmxlczogeyBvYmplY3RzOiBbeyB0aXRsZTogJ2Nvb2wnLCBkZXNjcmlwdGlvbjogJ05pY2UnLCBjaGFubmVsX2lkOiAnMDA3JyB9XSB9IH0pfVxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cIm1yLTEwXCJcbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPEJ1dHRvblxuICAgICAgICAgICAgICAgIHNpemU9XCJzbWFsbFwiXG4gICAgICAgICAgICAgICAgdGhlbWU9XCJibHVlLWJvcmRlclwiXG4gICAgICAgICAgICAgICAgdGV4dD1cIkRlbGV0ZSBhIHBvbGxcIlxuICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGRlbGV0ZVBvbGwoeyB2YXJpYWJsZXM6IHsgaWQ6IDMgfSB9KX1cbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJtci0xMFwiXG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIDxCdXR0b25cbiAgICAgICAgICAgICAgICBzaXplPVwic21hbGxcIlxuICAgICAgICAgICAgICAgIHRoZW1lPVwiYmx1ZS1ib3JkZXJcIlxuICAgICAgICAgICAgICAgIHRleHQ9XCJVcGRhdGUgYSBwb2xsXCJcbiAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiB1cGRhdGVQb2xsKHsgdmFyaWFibGVzOiB7IGlkOiAzLCBjaGFuZ2VzOiB7IHRpdGxlOiAnQ0hBTkdFRCcsIHF1ZXN0aW9uczogW3tpZDoxLHRleHQ6J01hbiBjb29sJ31dIH0gfSB9KX1cbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICAgIH1cbiAgICA8L1JlYWN0LkZyYWdtZW50PlxuICApXG59XG5cbkluZGV4LmdldEluaXRpYWxQcm9wcyA9IChjb250ZXh0KSA9PiB7XG4gIGNvbnN0IHsgcXVlcnk6IHsgcGF5bG9hZCB9IH0gPSBjb250ZXh0O1xuXG4gIHJldHVybiB7XG4gICAgY29vbDogdHJ1ZVxuICB9XG59XG5cbmV4cG9ydCBkZWZhdWx0IHdpdGhEYXRhKHdpdGhSb3V0ZXIoSW5kZXgpKVxuIl19 */\n/*@ sourceURL=/Users/joduplessis/Work/Weekday/polls/pages/index.js */"), query && __jsx("div", {
+  }, "*{margin:0px;padding:0px;}body{background:white;}.container{background:white;width:100%;height:100%;position:absolute;left:0px;top:0px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:stretch;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-align-content:center;-ms-flex-line-pack:center;align-content:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}.error{position:absolute;top:0px;left:0px;width:100%;}.polls-listing-container{-webkit-flex:1;-ms-flex:1;flex:1;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-content:center;-ms-flex-line-pack:center;align-content:center;-webkit-box-pack:start;-webkit-justify-content:flex-start;-ms-flex-pack:start;justify-content:flex-start;padding:20px;}\n/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9qb2R1cGxlc3Npcy9Xb3JrL1dlZWtkYXkvcG9sbHMvcGFnZXMvaW5kZXguanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBa0h5QixBQUdzQixBQUtNLEFBSUEsQUFhQyxBQU9YLFdBNUJLLE1BS2QsQUFJYSxDQWFILEtBckJWLEdBc0JXLEVBYkcsS0FtQkMsRUFMRixLQWJPLE1BY3BCLFlBYlcsU0FDRCxRQUNLLGdDQWdCUywwQ0FmRixvQ0FnQkQsNkRBZkUsZ0NBZ0JBLDRDQWZFLGdDQWdCSSxtRUFmN0Isc0NBZ0JlLGFBQ2YiLCJmaWxlIjoiL1VzZXJzL2pvZHVwbGVzc2lzL1dvcmsvV2Vla2RheS9wb2xscy9wYWdlcy9pbmRleC5qcyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSwgdXNlRWZmZWN0IH0gZnJvbSAncmVhY3QnXG5pbXBvcnQgeyB1c2VSb3V0ZXIsIHdpdGhSb3V0ZXIgfSBmcm9tICduZXh0L3JvdXRlcidcbmltcG9ydCBIZWFkIGZyb20gJ25leHQvaGVhZCdcbmltcG9ydCBmZXRjaCBmcm9tICdpc29tb3JwaGljLXVuZmV0Y2gnXG5pbXBvcnQgeyBCdXR0b24sIEVycm9yLCBMb2FkaW5nLCBOb3RpZmljYXRpb24sIFNwaW5uZXIgfSBmcm9tICdAd2Vla2RheS9lbGVtZW50cydcbmltcG9ydCBncWwgZnJvbSAnZ3JhcGhxbC10YWcnXG5pbXBvcnQgeyBRdWVyeSB9IGZyb20gJ3JlYWN0LWFwb2xsbydcbmltcG9ydCB3aXRoRGF0YSBmcm9tICcuLi9jb25maWcnXG5pbXBvcnQgUG9sbENvbXBvbmVudCBmcm9tICcuLi9jb21wb25lbnRzL3BvbGwuY29tcG9uZW50J1xuaW1wb3J0IHsgdXNlTXV0YXRpb24sIHVzZVN1YnNjcmlwdGlvbiB9IGZyb20gJ0BhcG9sbG8vcmVhY3QtaG9va3MnXG5cbmNvbnN0IERFTEVURV9QT0xMID0gZ3FsYFxuICBtdXRhdGlvbiBkZWxldGVfcG9sbHMoJGlkOiBJbnQpIHtcbiAgICBkZWxldGVfcG9sbHMoXG4gICAgICB3aGVyZToge2lkOiB7X2VxOiAkaWR9fVxuICAgICkge1xuICAgICAgYWZmZWN0ZWRfcm93c1xuICAgIH1cbiAgfVxuYDtcblxuY29uc3QgVVBEQVRFX1BPTEwgPSBncWxgXG4gIG11dGF0aW9uIHVwZGF0ZV9wb2xscygkaWQ6IEludCwgJGNoYW5nZXM6IHBvbGxzX3NldF9pbnB1dCkge1xuICAgIHVwZGF0ZV9wb2xscyhcbiAgICAgIHdoZXJlOiB7aWQ6IHtfZXE6ICRpZH19LFxuICAgICAgX3NldDogJGNoYW5nZXNcbiAgICApIHtcbiAgICAgIGFmZmVjdGVkX3Jvd3NcbiAgICAgIHJldHVybmluZyB7XG4gICAgICAgIGlkXG4gICAgICAgIHRpdGxlXG4gICAgICAgIGRlc2NyaXB0aW9uXG4gICAgICB9XG4gICAgfVxuICB9XG5gO1xuXG5jb25zdCBBRERfUE9MTCA9IGdxbGBcbiAgbXV0YXRpb24gYWRkX3BvbGwoJG9iamVjdHM6IFtwb2xsc19pbnNlcnRfaW5wdXQhXSEpIHtcbiAgICBpbnNlcnRfcG9sbHMob2JqZWN0czogJG9iamVjdHMpIHtcbiAgICAgIHJldHVybmluZyB7XG4gICAgICAgIGlkXG4gICAgICAgIHRpdGxlXG4gICAgICB9XG4gICAgfVxuICB9XG5gO1xuXG5mdW5jdGlvbiBJbmRleChwcm9wcykge1xuICBjb25zdCBbcXVlcnksIHNldFF1ZXJ5XSA9IHVzZVN0YXRlKG51bGwpXG4gIGNvbnN0IFt1c2VySWQsIHNldFVzZXJJZF0gPSB1c2VTdGF0ZSgnJylcbiAgY29uc3QgW2NoYW5uZWxJZCwgc2V0Q2hhbm5lbElkXSA9IHVzZVN0YXRlKCcnKVxuICBjb25zdCBbYWRkUG9sbCwgYWRkRGF0YV0gPSB1c2VNdXRhdGlvbihBRERfUE9MTClcbiAgY29uc3QgW3VwZGF0ZVBvbGwsIHVwZGF0ZURhdGFdID0gdXNlTXV0YXRpb24oVVBEQVRFX1BPTEwpXG4gIGNvbnN0IFtkZWxldGVQb2xsLCBkZWxldGVEYXRhXSA9IHVzZU11dGF0aW9uKERFTEVURV9QT0xMKVxuICBjb25zdCB7IGxvYWRpbmcsIGVycm9yLCBkYXRhIH0gPSB1c2VTdWJzY3JpcHRpb24oXG4gICAgZ3FsYFxuICAgICAgc3Vic2NyaXB0aW9uIGdldFBvbGxzIHtcbiAgICAgICAgcG9sbHMge1xuICAgIFx0ICAgIGlkXG4gICAgXHQgICAgdGl0bGVcbiAgICAgICAgICBkZXNjcmlwdGlvblxuICAgICAgICAgIHVzZXJfaWRcbiAgICAgICAgICBjaGFubmVsX2lkXG4gICAgICAgICAgZXhwaXJ5XG4gICAgICAgICAgcXVlc3Rpb25zXG4gICAgICAgICAgYW5zd2VycyB7XG4gICAgICAgICAgICBxdWVzdGlvbl9pZFxuICAgICAgICAgICAgdXNlcl9pZFxuICAgICAgICAgIH1cbiAgICBcdCAgfVxuICAgICAgfVxuICAgIGBcbiAgKTtcblxuICBpZiAoZGF0YSkge1xuICAgIGNvbnNvbGUubG9nKGRhdGEucG9sbHNbMF0pXG4gIH1cblxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIC8vIGNvbnN0IHsgcm91dGVyOiB7IHF1ZXJ5OiB7IHBheWxvYWQgfSB9fSA9IHByb3BzO1xuICAgIGNvbnN0IHBheWxvYWQgPSBidG9hKEpTT04uc3RyaW5naWZ5KHsgdXNlcklkOiAnNWRiN2UzYzk4NDc2MjQyMTU0ZDQzMTgxJywgY2hhbm5lbElkOiAnNWRiODdmMDRkYjA1OWE2ZDhkYzhkMDY4JyB9KSlcbiAgICBjb25zdCBwYXJzZWRQYXlsb2FkID0gSlNPTi5wYXJzZShhdG9iKHBheWxvYWQpKVxuXG4gICAgc2V0VXNlcklkKHBhcnNlZFBheWxvYWQudXNlcklkKVxuICAgIHNldENoYW5uZWxJZChwYXJzZWRQYXlsb2FkLmNoYW5uZWxJZClcbiAgICBzZXRRdWVyeShncWxgXG4gICAgXHRxdWVyeSB7XG4gICAgXHQgIHBvbGxzIHtcbiAgICBcdCAgICBpZFxuICAgIFx0ICAgIHRpdGxlXG4gICAgICAgICAgZGVzY3JpcHRpb25cbiAgICAgICAgICB1c2VyX2lkXG4gICAgICAgICAgY2hhbm5lbF9pZFxuICAgICAgICAgIGV4cGlyeVxuICAgICAgICAgIHF1ZXN0aW9uc1xuICAgICAgICAgIGFuc3dlcnMge1xuICAgICAgICAgICAgcXVlc3Rpb25faWRcbiAgICAgICAgICAgIHVzZXJfaWRcbiAgICAgICAgICB9XG4gICAgXHQgIH1cbiAgICBcdH1cbiAgICBgKVxuICB9LCBbXSlcblxuICByZXR1cm4gKFxuICAgIDxSZWFjdC5GcmFnbWVudD5cbiAgICAgIDxIZWFkPlxuICAgICAgICA8dGl0bGU+UG9sbHM8L3RpdGxlPlxuICAgICAgICA8bWV0YSBuYW1lPVwidmlld3BvcnRcIiBjb250ZW50PVwiaW5pdGlhbC1zY2FsZT0xLjAsIHdpZHRoPWRldmljZS13aWR0aFwiIC8+XG4gICAgICAgIDxsaW5rIGhyZWY9XCIvc3RhdGljL2Nzcy9zdHlsZXMuY3NzXCIgcmVsPVwic3R5bGVzaGVldFwiIC8+XG4gICAgICAgIDxsaW5rIGhyZWY9XCIvc3RhdGljL2ltYWdlcy9mYXZpY29uLnBuZ1wiIHJlbD1cInNob3J0Y3V0IGljb25cIiAvPlxuICAgICAgPC9IZWFkPlxuXG4gICAgICA8c3R5bGUgZ2xvYmFsIGpzeD57YFxuICAgICAgICAqIHtcbiAgICAgICAgICBtYXJnaW46IDBweDtcbiAgICAgICAgICBwYWRkaW5nOiAwcHg7XG4gICAgICAgIH1cblxuICAgICAgICBib2R5IHtcbiAgICAgICAgICBiYWNrZ3JvdW5kOiB3aGl0ZTtcbiAgICAgICAgfVxuXG4gICAgICAgIC5jb250YWluZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHdoaXRlO1xuICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICAgIHRvcDogMHB4O1xuICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7XG4gICAgICAgICAgYWxpZ24tY29udGVudDogY2VudGVyO1xuICAgICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB9XG5cbiAgICAgICAgLmVycm9yIHtcbiAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgdG9wOiAwcHg7XG4gICAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICB9XG5cbiAgICAgICAgLnBvbGxzLWxpc3RpbmctY29udGFpbmVyIHtcbiAgICAgICAgICBmbGV4OiAxO1xuICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICAgIGFsaWduLWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGZsZXgtc3RhcnQ7XG4gICAgICAgICAgcGFkZGluZzogMjBweDtcbiAgICAgICAgfVxuICAgICAgYH08L3N0eWxlPlxuXG4gICAgICB7cXVlcnkgJiZcbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJjb250YWluZXIgY29sdW1uXCI+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJwb2xscy1saXN0aW5nLWNvbnRhaW5lclwiPlxuXG4gICAgICAgICAgICA8UXVlcnlcbiAgICAgICAgICAgICAgcXVlcnk9e3F1ZXJ5fVxuICAgICAgICAgICAgICBmZXRjaFBvbGljeT17J2NhY2hlLWFuZC1uZXR3b3JrJ30+XG4gICAgICAgICAgICAgIHsoeyBsb2FkaW5nLCBkYXRhLCBlcnJvciB9KSA9PiB7XG4gICAgICAgICAgICAgICAgaWYgKGxvYWRpbmcpIHJldHVybiA8U3Bpbm5lciAvPlxuICAgICAgICAgICAgICAgIGlmIChlcnJvcikgcmV0dXJuIDxkaXYgY2xhc3NOYW1lPVwiZXJyb3JcIj48RXJyb3IgbWVzc2FnZT1cIkVycm9yIGxvYWRpbmcgcG9sbHNcIiAvPjwvZGl2PlxuXG5cbiAgICAgICAgICAgICAgICAvLyBJZiBubyBwb2xscyBleGlzdFxuICAgICAgICAgICAgICAgIGlmIChkYXRhLnBvbGxzLmxlbmd0aCA9PSAwKSB7XG4gICAgICAgICAgICAgICAgICByZXR1cm4gKFxuICAgICAgICAgICAgICAgICAgICA8UmVhY3QuRnJhZ21lbnQ+XG4gICAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9XCIuLi9zdGF0aWMvaW1hZ2VzL25vLXBvbGxzLnBuZ1wiIHdpZHRoPVwiNjAlXCIgY2xhc3NOYW1lPVwibWItMzBcIi8+XG4gICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJoMyBtYi0yMCBwbC0yMCBwci0yMCBjb2xvci1kMiB0ZXh0LWNlbnRlclwiPlRoZXJlIGFyZSBubyBwb2xsczwvZGl2PlxuICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiaDUgbWItMjAgcGwtMjAgcHItMjAgY29sb3ItZDAgdGV4dC1jZW50ZXJcIj5UaGVyZSBhcmUgbm8gcG9sbHMgZm9yIHRoaXMgY2hhbm5lbC4gQ2xpY2sgb24gdGhlIGJ1dHRvbiBiZWxvdyB0byBjcmVhdGUgeW91ciBmaXJzdCBwb2xsLjwvZGl2PlxuICAgICAgICAgICAgICAgICAgICA8L1JlYWN0LkZyYWdtZW50PlxuICAgICAgICAgICAgICAgICAgKVxuICAgICAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgICAgIC8vIElmIHRoZXJlIGFyZVxuICAgICAgICAgICAgICAgIHJldHVybiBkYXRhLnBvbGxzLm1hcCgocG9sbCwgaW5kZXgpID0+IHtcbiAgICAgICAgICAgICAgICAgIHJldHVybiAoXG4gICAgICAgICAgICAgICAgICAgIDxQb2xsQ29tcG9uZW50XG4gICAgICAgICAgICAgICAgICAgICAga2V5PXtpbmRleH1cbiAgICAgICAgICAgICAgICAgICAgICBleHBpcnk9e3BvbGwuZXhwaXJ5fVxuICAgICAgICAgICAgICAgICAgICAgIHRpdGxlPXtwb2xsLnRpdGxlfVxuICAgICAgICAgICAgICAgICAgICAgIHVzZXJJZD17cG9sbC51c2VyX2lkfVxuICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRVc2VySWQ9e3VzZXJJZH1cbiAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbj17cG9sbC5kZXNjcmlwdGlvbn1cbiAgICAgICAgICAgICAgICAgICAgICBxdWVzdGlvbnM9e3BvbGwucXVlc3Rpb25zfVxuICAgICAgICAgICAgICAgICAgICAgIGFuc3dlcnM9e3BvbGwuYW5zd2Vyc31cbiAgICAgICAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgICAgIClcbiAgICAgICAgICAgICAgICB9KVxuICAgICAgICAgICAgICB9fVxuICAgICAgICAgICAgPC9RdWVyeT5cblxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJyb3cganVzdGlmeS1jb250ZW50LWNlbnRlciBtdC0zMCB3LTEwMFwiPlxuICAgICAgICAgICAgICA8QnV0dG9uXG4gICAgICAgICAgICAgICAgc2l6ZT1cInNtYWxsXCJcbiAgICAgICAgICAgICAgICB0aGVtZT1cImJsdWUtYm9yZGVyXCJcbiAgICAgICAgICAgICAgICB0ZXh0PVwiQ3JlYXRlIGEgcG9sbFwiXG4gICAgICAgICAgICAgICAgb25DbGljaz17KCkgPT4gYWRkUG9sbCh7IHZhcmlhYmxlczogeyBvYmplY3RzOiBbeyB0aXRsZTogJ2Nvb2wnLCBkZXNjcmlwdGlvbjogJ05pY2UnLCBjaGFubmVsX2lkOiAnMDA3JyB9XSB9IH0pfVxuICAgICAgICAgICAgICAgIGNsYXNzTmFtZT1cIm1yLTEwXCJcbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgICAgPEJ1dHRvblxuICAgICAgICAgICAgICAgIHNpemU9XCJzbWFsbFwiXG4gICAgICAgICAgICAgICAgdGhlbWU9XCJibHVlLWJvcmRlclwiXG4gICAgICAgICAgICAgICAgdGV4dD1cIkRlbGV0ZSBhIHBvbGxcIlxuICAgICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGRlbGV0ZVBvbGwoeyB2YXJpYWJsZXM6IHsgaWQ6IDMgfSB9KX1cbiAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJtci0xMFwiXG4gICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgIDxCdXR0b25cbiAgICAgICAgICAgICAgICBzaXplPVwic21hbGxcIlxuICAgICAgICAgICAgICAgIHRoZW1lPVwiYmx1ZS1ib3JkZXJcIlxuICAgICAgICAgICAgICAgIHRleHQ9XCJVcGRhdGUgYSBwb2xsXCJcbiAgICAgICAgICAgICAgICBvbkNsaWNrPXsoKSA9PiB1cGRhdGVQb2xsKHsgdmFyaWFibGVzOiB7IGlkOiAxLCBjaGFuZ2VzOiB7IHRpdGxlOiAnVXBkYXRlZC4uLi4nIH0gfSB9KX1cbiAgICAgICAgICAgICAgLz5cbiAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICAgIH1cbiAgICA8L1JlYWN0LkZyYWdtZW50PlxuICApXG59XG5cbkluZGV4LmdldEluaXRpYWxQcm9wcyA9IChjb250ZXh0KSA9PiB7XG4gIGNvbnN0IHsgcXVlcnk6IHsgcGF5bG9hZCB9IH0gPSBjb250ZXh0O1xuXG4gIHJldHVybiB7XG4gICAgY29vbDogdHJ1ZVxuICB9XG59XG5cbmV4cG9ydCBkZWZhdWx0IHdpdGhEYXRhKHdpdGhSb3V0ZXIoSW5kZXgpKVxuIl19 */\n/*@ sourceURL=/Users/joduplessis/Work/Weekday/polls/pages/index.js */"), query && __jsx("div", {
     className: "jsx-1390389061" + " " + "container column",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 134
+      lineNumber: 157
     },
     __self: this
   }, __jsx("div", {
     className: "jsx-1390389061" + " " + "polls-listing-container",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 135
+      lineNumber: 158
     },
     __self: this
   }, __jsx(react_apollo__WEBPACK_IMPORTED_MODULE_10__["Query"], {
@@ -76692,7 +78036,7 @@ function Index(props) {
     fetchPolicy: 'cache-and-network',
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 137
+      lineNumber: 160
     },
     __self: this
   }, function (_ref) {
@@ -76702,7 +78046,7 @@ function Index(props) {
     if (loading) return __jsx(_weekday_elements__WEBPACK_IMPORTED_MODULE_8__["Spinner"], {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 141
+        lineNumber: 164
       },
       __self: this
     });
@@ -76710,14 +78054,14 @@ function Index(props) {
       className: "jsx-1390389061" + " " + "error",
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 142
+        lineNumber: 165
       },
       __self: this
     }, __jsx(_weekday_elements__WEBPACK_IMPORTED_MODULE_8__["Error"], {
       message: "Error loading polls",
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 142
+        lineNumber: 165
       },
       __self: this
     })); // If no polls exist
@@ -76726,7 +78070,7 @@ function Index(props) {
       return __jsx(react__WEBPACK_IMPORTED_MODULE_4___default.a.Fragment, {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 148
+          lineNumber: 171
         },
         __self: this
       }, __jsx("img", {
@@ -76735,21 +78079,21 @@ function Index(props) {
         className: "jsx-1390389061" + " " + "mb-30",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 149
+          lineNumber: 172
         },
         __self: this
       }), __jsx("div", {
         className: "jsx-1390389061" + " " + "h3 mb-20 pl-20 pr-20 color-d2 text-center",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 150
+          lineNumber: 173
         },
         __self: this
       }, "There are no polls"), __jsx("div", {
         className: "jsx-1390389061" + " " + "h5 mb-20 pl-20 pr-20 color-d0 text-center",
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 151
+          lineNumber: 174
         },
         __self: this
       }, "There are no polls for this channel. Click on the button below to create your first poll."));
@@ -76768,7 +78112,7 @@ function Index(props) {
         answers: poll.answers,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 159
+          lineNumber: 182
         },
         __self: this
       });
@@ -76777,7 +78121,7 @@ function Index(props) {
     className: "jsx-1390389061" + " " + "row justify-content-center mt-30 w-100",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 174
+      lineNumber: 197
     },
     __self: this
   }, __jsx(_weekday_elements__WEBPACK_IMPORTED_MODULE_8__["Button"], {
@@ -76798,7 +78142,7 @@ function Index(props) {
     className: "mr-10",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 175
+      lineNumber: 198
     },
     __self: this
   }), __jsx(_weekday_elements__WEBPACK_IMPORTED_MODULE_8__["Button"], {
@@ -76815,7 +78159,7 @@ function Index(props) {
     className: "mr-10",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 182
+      lineNumber: 205
     },
     __self: this
   }), __jsx(_weekday_elements__WEBPACK_IMPORTED_MODULE_8__["Button"], {
@@ -76825,20 +78169,16 @@ function Index(props) {
     onClick: function onClick() {
       return updatePoll({
         variables: {
-          id: 3,
+          id: 1,
           changes: {
-            title: 'CHANGED',
-            questions: [{
-              id: 1,
-              text: 'Man cool'
-            }]
+            title: 'Updated....'
           }
         }
       });
     },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 189
+      lineNumber: 212
     },
     __self: this
   })))));
@@ -76855,7 +78195,7 @@ Index.getInitialProps = function (context) {
 
 /***/ }),
 
-/***/ 0:
+/***/ 1:
 /*!***********************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2F&absolutePagePath=%2FUsers%2Fjoduplessis%2FWork%2FWeekday%2Fpolls%2Fpages%2Findex.js ***!
   \***********************************************************************************************************************************/
@@ -76878,5 +78218,5 @@ module.exports = dll_ea92a4d9664833a26066;
 
 /***/ })
 
-},[[0,"static/runtime/webpack.js"]]]);
+},[[1,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=index.js.map

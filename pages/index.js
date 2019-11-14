@@ -7,7 +7,7 @@ import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation, useSubscription } from '@apollo/react-hooks'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {
@@ -53,6 +53,29 @@ function Index(props) {
   const [addPoll, addData] = useMutation(ADD_POLL)
   const [updatePoll, updateData] = useMutation(UPDATE_POLL)
   const [deletePoll, deleteData] = useMutation(DELETE_POLL)
+  const { loading, error, data } = useSubscription(
+    gql`
+      subscription getPolls {
+        polls {
+    	    id
+    	    title
+          description
+          user_id
+          channel_id
+          expiry
+          questions
+          answers {
+            question_id
+            user_id
+          }
+    	  }
+      }
+    `
+  );
+
+  if (data) {
+    console.log(data.polls[0])
+  }
 
   useEffect(() => {
     // const { router: { query: { payload } }} = props;
@@ -190,7 +213,7 @@ function Index(props) {
                 size="small"
                 theme="blue-border"
                 text="Update a poll"
-                onClick={() => updatePoll({ variables: { id: 3, changes: { title: 'CHANGED', questions: [{id:1,text:'Man cool'}] } } })}
+                onClick={() => updatePoll({ variables: { id: 1, changes: { title: 'Updated....' } } })}
               />
             </div>
           </div>
