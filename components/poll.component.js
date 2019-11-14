@@ -113,7 +113,10 @@ export default function PollComponent(props) {
               <span>This poll expires at {moment(props.expiry).format('LLL')}</span>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button ml-10 color-blue">Edit poll</strong>
+              <strong className="button ml-10 color-blue">Update</strong>
+            }
+            {props.currentUserId == props.userId &&
+              <strong className="button ml-10 color-red">Delete</strong>
             }
           </div>
         </div>

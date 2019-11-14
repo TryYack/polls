@@ -19,6 +19,10 @@
     "/message": [
       "static/runtime/webpack.js",
       "static/runtime/main.js"
+    ],
+    "/update": [
+      "static/runtime/webpack.js",
+      "static/runtime/main.js"
     ]
   }
 }
