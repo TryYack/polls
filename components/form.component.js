@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Progress, Button, Input, Textarea } from '@weekday/elements'
 import moment from 'moment'
-import { X } from 'react-feather'
+import { Trash } from 'react-feather'
 
 export default function FormComponent(props) {
   const today = moment()
@@ -11,9 +11,12 @@ export default function FormComponent(props) {
   const [day, setDay] = useState(today.format('DD'))
   const [month, setMonth] = useState(today.format('MM'))
   const [year, setYear] = useState(today.format('YYYY'))
-  const [questions, setQuestions] = useState([])
+  const [questions, setQuestions] = useState([{id: 0, text: ''}])
 
-  const addQuestion = () => setQuestions([...questions, ''])
+  const addQuestion = () => setQuestions([...questions, {
+    id: questions.length + 1,
+    text: '',
+  }])
 
   const removeQuestion = (index) => {
     let mutableQuestions = Object.assign([], questions)
@@ -21,11 +24,11 @@ export default function FormComponent(props) {
     setQuestions(mutableQuestions)
   }
 
-  const updateQuestion = (value, index) => {
-    setQuestions(questions.map((question, i) => {
-      if (index != i) return question
+  const updateQuestion = (text, id) => {
+    setQuestions(questions.map(question => {
+      if (id != question.id) return question
 
-      return value
+      return { id: question.id, text }
     }))
   }
 
@@ -42,7 +45,7 @@ export default function FormComponent(props) {
     setDay(date.format('DD'))
     setMonth(date.format('MM'))
     setYear(date.format('YYYY'))
-    setQuestions(props.questions.map(question => question.question))
+    setQuestions(props.questions)
   }, [])
 
   return (
@@ -78,12 +81,14 @@ export default function FormComponent(props) {
           <Input
             value={title}
             inputSize="large"
+            placeholder="Poll title"
             onChange={e => setTitle(e.target.value)}
           />
 
           <Textarea
             value={description}
             textareaSize="large"
+            placeholder="Poll description"
             rows={3}
             onChange={e => setDescription(e.target.value)}
           />
@@ -94,13 +99,14 @@ export default function FormComponent(props) {
             return (
               <div className="row w-100 mb-5" key={index}>
                 <Input
-                  value={question}
+                  value={question.text}
+                  placeholder="Option text"
                   inputSize="large"
-                  onChange={e => updateQuestion(e.target.value, index)}
+                  onChange={e => updateQuestion(e.target.value, question.id)}
                 />
-                <X
-                  color="#524150"
-                  size="30"
+              <Trash
+                  color="#ACB5BD"
+                  size="20"
                   thickness="1.5"
                   className="ml-20 button"
                   onClick={e => removeQuestion(index)}
@@ -120,7 +126,7 @@ export default function FormComponent(props) {
             <Button
               size="small"
               theme="blue"
-              text="Create poll"
+              text={!props.id ? "Create poll" : "Update poll"}
               onClick={save}
             />
           </div>

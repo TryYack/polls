@@ -29,17 +29,15 @@ function Index(props) {
           user_id
           channel_id
           expiry
-          questions {
-            id
-            question
-            answers {
-              user_id
-            }
+          questions
+          answers {
+            question_id
+            user_id
           }
     	  }
     	}
     `)
-  }. [])
+  }, [])
 
   return (
     <React.Fragment>
@@ -129,6 +127,7 @@ function Index(props) {
                       currentUserId={userId}
                       description={poll.description}
                       questions={poll.questions}
+                      answers={poll.answers}
                     />
                   </div>
                 )

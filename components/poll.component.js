@@ -8,29 +8,37 @@ export default function PollComponent(props) {
   const [highest, setHighest] = useState(0)
   const [expired, setExpired] = useState(0)
 
+  const updatePoll = async () => {
+    console.log('Updating')
+  }
+
+  const deletePoll = async () => {
+    if (confirm("Are you sure?")) {
+      console.log('Deleting')
+    } else {
+      console.log('Not deleting')
+    }
+  }
+
   const answerQuestion = async (questionId) => {
     console.log(questionId)
     setComplete(true)
   }
 
   useEffect(() => {
-    let answerCount = 0
     let answerCountHighest = 0
 
     props.questions.map(question => {
       // See if this user has completed the poll
-      question.answers.map(answer => {
+      props.answers.map(answer => {
         if (answer.user_id == props.currentUserId) setComplete(true)
       })
 
       // Set the score for the highest amount of votes
-      if (question.answers.length > answerCountHighest) answerCountHighest = question.answers.length
-
-      // Incremenet the total amount of answers/voted
-      answerCount += question.answers.length
+      answerCountHighest = props.answers.filter(answer => answer.question_id == question.id).length
     })
 
-    setTotal(answerCount)
+    setTotal(props.answers.length)
     setHighest(answerCountHighest)
     setExpired(moment(props.expiry).isBefore(moment()))
   }, [])
@@ -73,7 +81,7 @@ export default function PollComponent(props) {
                 return (
                   <div className="progress-container" key={index}>
                     <Button
-                      text={question.question}
+                      text={question.text}
                       theme="blue-border"
                       size="full-width"
                       style={{ height: 35 }}
@@ -88,15 +96,16 @@ export default function PollComponent(props) {
           {(complete || expired) &&
             <React.Fragment>
               {props.questions.map((question, index) => {
-                const percentage = Math.floor((question.answers.length / total) * 100)
-                const color = question.answers.length >= highest ? '#e9edf2' : '#f0f2f5'
+                const answers = props.answers.filter(answer => answer.question_id == question.id)
+                const percentage = Math.floor((answers.length / total) * 100)
+                const color = answers.length >= highest ? '#e9edf2' : '#f0f2f5'
 
                 return (
                   <div className="progress-container" key={index}>
                     <Progress
                       percentage={percentage}
                       color={color}
-                      text={question.question}
+                      text={question.text}
                       labels={true}
                     />
                   </div>
@@ -110,13 +119,13 @@ export default function PollComponent(props) {
               <span>This poll expired {moment(props.expiry).fromNow()}</span>
             }
             {!expired &&
-              <span>This poll expires at {moment(props.expiry).format('LLL')}</span>
+              <span>This poll expires at {moment(props.expiry).format('LL')}</span>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button ml-10 color-blue">Update</strong>
+              <strong className="button ml-10 color-blue" onClick={updatePoll}>Update</strong>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button ml-10 color-red">Delete</strong>
+              <strong className="button ml-10 color-red" onClick={deletePoll}>Delete</strong>
             }
           </div>
         </div>

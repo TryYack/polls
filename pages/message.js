@@ -31,12 +31,10 @@ function Message(props) {
           user_id
           channel_id
           expiry
-          questions {
-            id
-            question
-            answers {
-              user_id
-            }
+          questions
+          answers {
+            user_id
+            question_id
           }
     	  }
     	}
@@ -124,14 +122,15 @@ function Message(props) {
               return data.polls.map((poll, index) => {
                 return (
                   <div className="polls-listing-container" key={index}>
-                    <PollComponent
-                      expiry={poll.expiry}
-                      title={poll.title}
-                      userId={poll.user_id}
-                      currentUserId={userId}
-                      description={poll.description}
-                      questions={poll.questions}
-                    />
+                      <PollComponent
+                        expiry={poll.expiry}
+                        title={poll.title}
+                        userId={poll.user_id}
+                        currentUserId={userId}
+                        description={poll.description}
+                        questions={poll.questions}
+                        answers={poll.answers}
+                      />
                   </div>
                 )
               })

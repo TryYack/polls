@@ -32,12 +32,9 @@ function Update(props) {
           user_id
           channel_id
           expiry
-          questions {
-            id
-            question
-            answers {
-              user_id
-            }
+          questions
+          answers {
+            user_id
           }
     	  }
     	}
