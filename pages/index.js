@@ -7,11 +7,52 @@ import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
+import { useMutation } from '@apollo/react-hooks'
+
+const DELETE_POLL = gql`
+  mutation delete_polls($id: Int) {
+    delete_polls(
+      where: {id: {_eq: $id}}
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+const UPDATE_POLL = gql`
+  mutation update_polls($id: Int, $changes: polls_set_input) {
+    update_polls(
+      where: {id: {_eq: $id}},
+      _set: $changes
+    ) {
+      affected_rows
+      returning {
+        id
+        title
+        description
+      }
+    }
+  }
+`;
+
+const ADD_POLL = gql`
+  mutation add_poll($objects: [polls_insert_input!]!) {
+    insert_polls(objects: $objects) {
+      returning {
+        id
+        title
+      }
+    }
+  }
+`;
 
 function Index(props) {
   const [query, setQuery] = useState(null)
   const [userId, setUserId] = useState('')
   const [channelId, setChannelId] = useState('')
+  const [addPoll, addData] = useMutation(ADD_POLL)
+  const [updatePoll, updateData] = useMutation(UPDATE_POLL)
+  const [deletePoll, deleteData] = useMutation(DELETE_POLL)
 
   useEffect(() => {
     // const { router: { query: { payload } }} = props;
@@ -91,36 +132,32 @@ function Index(props) {
 
       {query &&
         <div className="container column">
-          <Query
-            query={query}
-            fetchPolicy={'cache-and-network'}>
-            {({ loading, data, error }) => {
-              if (loading) return <Spinner />
-              if (error) return <div className="error"><Error message="Error loading polls" /></div>
+          <div className="polls-listing-container">
+
+            <Query
+              query={query}
+              fetchPolicy={'cache-and-network'}>
+              {({ loading, data, error }) => {
+                if (loading) return <Spinner />
+                if (error) return <div className="error"><Error message="Error loading polls" /></div>
 
 
-              // If no polls exist
-              if (data.polls.length == 0) {
-                return (
-                  <React.Fragment>
-                    <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
-                    <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
-                    <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
+                // If no polls exist
+                if (data.polls.length == 0) {
+                  return (
+                    <React.Fragment>
+                      <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
+                      <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
+                      <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
+                    </React.Fragment>
+                  )
+                }
 
-                    <Button
-                      size="small"
-                      theme="blue-border"
-                      text="Create a poll"
-                    />
-                  </React.Fragment>
-                )
-              }
-
-              // If there are
-              return data.polls.map((poll, index) => {
-                return (
-                  <div className="polls-listing-container" key={index}>
+                // If there are
+                return data.polls.map((poll, index) => {
+                  return (
                     <PollComponent
+                      key={index}
                       expiry={poll.expiry}
                       title={poll.title}
                       userId={poll.user_id}
@@ -129,11 +166,34 @@ function Index(props) {
                       questions={poll.questions}
                       answers={poll.answers}
                     />
-                  </div>
-                )
-              })
-            }}
-          </Query>
+                  )
+                })
+              }}
+            </Query>
+
+            <div className="row justify-content-center mt-30 w-100">
+              <Button
+                size="small"
+                theme="blue-border"
+                text="Create a poll"
+                onClick={() => addPoll({ variables: { objects: [{ title: 'cool', description: 'Nice', channel_id: '007' }] } })}
+                className="mr-10"
+              />
+              <Button
+                size="small"
+                theme="blue-border"
+                text="Delete a poll"
+                onClick={() => deletePoll({ variables: { id: 3 } })}
+                className="mr-10"
+              />
+              <Button
+                size="small"
+                theme="blue-border"
+                text="Update a poll"
+                onClick={() => updatePoll({ variables: { id: 3, changes: { title: 'CHANGED', questions: [{id:1,text:'Man cool'}] } } })}
+              />
+            </div>
+          </div>
         </div>
       }
     </React.Fragment>

@@ -53,6 +53,7 @@ export default function PollComponent(props) {
           align-items: stretch;
           align-content: center;
           justify-content: center;
+          margin-bottom: 20px;
         }
 
         .poll-inner {

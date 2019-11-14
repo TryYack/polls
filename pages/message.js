@@ -108,12 +108,6 @@ function Message(props) {
                     <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
                     <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
                     <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
-
-                    <Button
-                      size="small"
-                      theme="blue-border"
-                      text="Create a poll"
-                    />
                   </React.Fragment>
                 )
               }
@@ -122,20 +116,27 @@ function Message(props) {
               return data.polls.map((poll, index) => {
                 return (
                   <div className="polls-listing-container" key={index}>
-                      <PollComponent
-                        expiry={poll.expiry}
-                        title={poll.title}
-                        userId={poll.user_id}
-                        currentUserId={userId}
-                        description={poll.description}
-                        questions={poll.questions}
-                        answers={poll.answers}
-                      />
+                    <PollComponent
+                      expiry={poll.expiry}
+                      title={poll.title}
+                      userId={poll.user_id}
+                      currentUserId={userId}
+                      description={poll.description}
+                      questions={poll.questions}
+                      answers={poll.answers}
+                    />
                   </div>
                 )
               })
             }}
           </Query>
+          <div className="row">
+            <Button
+              size="small"
+              theme="blue-border"
+              text="Create a poll"
+            />
+          </div>
         </div>
       }
     </React.Fragment>
