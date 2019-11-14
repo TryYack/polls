@@ -8,37 +8,38 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 
-const query = gql`
-	query {
-	  polls {
-	    id
-	    title
-      description
-      user_id
-      channel_id
-      questions {
-        id
-        question
-        answers {
-          user_id
-        }
-      }
-	  }
-	}
-`
-
 function Index(props) {
-  const [userId, setUserId] = useState("")
-  const [channelId, setChannelId] = useState("")
+  const [query, setQuery] = useState(null)
+  const [userId, setUserId] = useState('')
+  const [channelId, setChannelId] = useState('')
 
   useEffect(() => {
     // const { router: { query: { payload } }} = props;
     const payload = btoa(JSON.stringify({ userId: '5db7e3c98476242154d43181', channelId: '5db87f04db059a6d8dc8d068' }))
-    const { userId, channelId } = JSON.parse(atob(payload))
+    const parsedPayload = JSON.parse(atob(payload))
 
-    setUserId(userId)
-    setChannelId(channelId)
-  }, [])
+    setUserId(parsedPayload.userId)
+    setChannelId(parsedPayload.channelId)
+    setQuery(gql`
+    	query {
+    	  polls {
+    	    id
+    	    title
+          description
+          user_id
+          channel_id
+          expiry
+          questions {
+            id
+            question
+            answers {
+              user_id
+            }
+          }
+    	  }
+    	}
+    `)
+  }. [])
 
   return (
     <React.Fragment>
@@ -90,50 +91,52 @@ function Index(props) {
         }
       `}</style>
 
-      <div className="container column">
-        <Query
-          query={ query }
-          fetchPolicy={ 'cache-and-network' }>
-          {({ loading, data, error }) => {
-            if (loading) return <Spinner />
-            if (error) return <div className="error"><Error message="Error loading polls" /></div>
+      {query &&
+        <div className="container column">
+          <Query
+            query={query}
+            fetchPolicy={'cache-and-network'}>
+            {({ loading, data, error }) => {
+              if (loading) return <Spinner />
+              if (error) return <div className="error"><Error message="Error loading polls" /></div>
 
 
-            // If no polls exist
-            if (data.polls.length == 0) {
-              return (
-                <React.Fragment>
-                  <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
-                  <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
-                  <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
+              // If no polls exist
+              if (data.polls.length == 0) {
+                return (
+                  <React.Fragment>
+                    <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
+                    <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
+                    <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
 
-                  <Button
-                    size="small"
-                    theme="blue-border"
-                    text="Create a poll"
-                  />
-                </React.Fragment>
-              )
-            }
+                    <Button
+                      size="small"
+                      theme="blue-border"
+                      text="Create a poll"
+                    />
+                  </React.Fragment>
+                )
+              }
 
-            // If there are
-            return data.polls.map((poll, index) => {
-              return (
-                <div className="polls-listing-container" key={index}>
-                  <PollComponent
-                    expiry={poll.expiry}
-                    title={poll.title}
-                    userId={poll.user_id}
-                    currentUserId={userId}
-                    description={poll.description}
-                    questions={poll.questions}
-                  />
-                </div>
-              )
-            })
-          }}
-        </Query>
-      </div>
+              // If there are
+              return data.polls.map((poll, index) => {
+                return (
+                  <div className="polls-listing-container" key={index}>
+                    <PollComponent
+                      expiry={poll.expiry}
+                      title={poll.title}
+                      userId={poll.user_id}
+                      currentUserId={userId}
+                      description={poll.description}
+                      questions={poll.questions}
+                    />
+                  </div>
+                )
+              })
+            }}
+          </Query>
+        </div>
+      }
     </React.Fragment>
   )
 }

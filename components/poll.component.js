@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Progress, Button } from '@weekday/elements'
+import moment from 'moment'
 
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
   const [total, setTotal] = useState(0)
   const [highest, setHighest] = useState(0)
+  const [expired, setExpired] = useState(0)
 
   const answerQuestion = async (questionId) => {
     console.log(questionId)
@@ -30,6 +32,7 @@ export default function PollComponent(props) {
 
     setTotal(answerCount)
     setHighest(answerCountHighest)
+    setExpired(moment(props.expiry).isBefore(moment()))
   }, [])
 
   return (
@@ -64,7 +67,7 @@ export default function PollComponent(props) {
           <div className="h4 color-d3 text-left w-100 mb-0">{props.title}</div>
           <div className="h5 color-d0 text-left w-100 mb-10">{props.description}</div>
 
-          {!complete &&
+          {!complete && !expired &&
             <React.Fragment>
               {props.questions.map((question, index) => {
                 return (
@@ -82,7 +85,7 @@ export default function PollComponent(props) {
             </React.Fragment>
           }
 
-          {complete &&
+          {(complete || expired) &&
             <React.Fragment>
               {props.questions.map((question, index) => {
                 const percentage = Math.floor((question.answers.length / total) * 100)
@@ -103,7 +106,12 @@ export default function PollComponent(props) {
           }
 
           <div className="p color-d1 text-left w-100 mt-5">
-            <span>This poll expires in 5 days</span>
+            {expired &&
+              <span>This poll expired {moment(props.expiry).fromNow()}</span>
+            }
+            {!expired &&
+              <span>This poll expires at {moment(props.expiry).format('LLL')}</span>
+            }
             {props.currentUserId == props.userId &&
               <strong className="button ml-10 color-blue">Edit poll</strong>
             }
