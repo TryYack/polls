@@ -3,46 +3,21 @@ import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
 import { Button } from '@weekday/elements'
+import gql from 'graphql-tag'
+import { Query } from 'react-apollo'
+import withData from '../config'
+
+const query = gql`
+	query {
+	  polls {
+	    id
+	    title
+      description
+	  }
+	}
+`
 
 function Index(props) {
-
-  /*
-  useEffect(() => {
-    setLoading(true)
-    setError(false)
-
-    try {
-      const { router: { query: { email, token } }} = props;
-
-      if (!email || !token) return
-
-      fetch('https://api.weekday.sh/api/v1/auth/confirm', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: { 'Content-Type': 'application/json' },
-        redirect: 'follow',
-        referrer: 'no-referrer',
-        body: JSON.stringify({ email, token }),
-      })
-      .then(res => res.json())
-      .then(data => {
-        setLoading(false)
-
-        if (!data.success) setError(true)
-      })
-      .catch(e => {
-        setLoading(false)
-        setError(true)
-      })
-    } catch (e) {
-      setLoading(false)
-      setError(true)
-    }
-  }, [props.router.query.email])
-  */
-
   useEffect(() => {
     const { router: { query: { payload } }} = props;
 
@@ -82,18 +57,31 @@ function Index(props) {
         }
       `}</style>
 
-      <div className="container column">
-        <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
+      <Query
+        query={ query }
+        fetchPolicy={ 'cache-and-network' }>
+        {({ loading, data, error }) => {
+          console.log(loading, data, error)
 
-        <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
-        <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">You haven't created any polls. Click on the button below to create your first poll.</div>
+          if(error) {
+            return (<div>Error..</div>);
+          }
+          return (
+            <div className="container column">
+              <img src="../static/images/no-polls.png" width="60%" className="mb-30"/>
 
-        <Button
-          size="small"
-          theme="blue-border"
-          text="Create a poll"
-        />
-      </div>
+              <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
+              <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">You haven't created any polls. Click on the button below to create your first poll.</div>
+
+              <Button
+                size="small"
+                theme="blue-border"
+                text="Create a poll"
+              />
+            </div>
+          );
+        }}
+      </Query>
     </React.Fragment>
   )
 }
@@ -106,4 +94,4 @@ Index.getInitialProps = (context) => {
   }
 }
 
-export default withRouter(Index)
+export default withData(withRouter(Index))
