@@ -41,7 +41,7 @@ export default function PollComponent(props) {
     setTotal(props.answers.length)
     setHighest(answerCountHighest)
     setExpired(moment(props.expiry).isBefore(moment()))
-  }, [])
+  }, [props])
 
   return (
     <React.Fragment>
@@ -76,7 +76,7 @@ export default function PollComponent(props) {
           <div className="h4 color-d3 text-left w-100 mb-0">{props.title}</div>
           <div className="h5 color-d0 text-left w-100 mb-10">{props.description}</div>
 
-          {!complete && !expired &&
+          {(!complete && !expired) &&
             <React.Fragment>
               {props.questions.map((question, index) => {
                 return (
@@ -98,8 +98,12 @@ export default function PollComponent(props) {
             <React.Fragment>
               {props.questions.map((question, index) => {
                 const answers = props.answers.filter(answer => answer.question_id == question.id)
-                const percentage = Math.floor((answers.length / total) * 100)
-                const color = answers.length >= highest ? '#e9edf2' : '#f0f2f5'
+                const percentage = answers ? 0 : Math.floor((answers.length / total) * 100)
+                const color = answers
+                                ? '#f0f2f5'
+                                : answers.length >= highest
+                                  ? '#e9edf2'
+                                  : '#f0f2f5'
 
                 return (
                   <div className="progress-container" key={index}>
@@ -116,17 +120,20 @@ export default function PollComponent(props) {
           }
 
           <div className="p color-d1 text-left w-100 mt-5">
-            {expired &&
-              <span>This poll expired {moment(props.expiry).fromNow()}</span>
+            {(expired && props.expiry) &&
+              <span className="mr-10">This poll expired {moment(props.expiry).fromNow()}</span>
             }
-            {!expired &&
-              <span>This poll expires at {moment(props.expiry).format('LL')}</span>
+            {(!expired && props.expiry) &&
+              <span className="mr-10">This poll expires at {moment(props.expiry).format('LL')}</span>
+            }
+            {(!expired && !props.expiry) &&
+              <span className="mr-10">This poll does not expire</span>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button ml-10 color-blue" onClick={updatePoll}>Update</strong>
+              <strong className="button mr-10 color-blue" onClick={updatePoll}>Update</strong>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button ml-10 color-red" onClick={deletePoll}>Delete</strong>
+              <strong className="button color-red" onClick={deletePoll}>Delete</strong>
             }
           </div>
         </div>
