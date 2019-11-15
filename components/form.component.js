@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Progress, Button, Input, Textarea } from '@weekday/elements'
+import { Progress, Button, Input, Textarea, Select } from '@weekday/elements'
 import moment from 'moment'
 import { Trash } from 'react-feather'
 
 export default function FormComponent(props) {
   const today = moment()
-
+  const [id, setId] = useState(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [day, setDay] = useState(today.format('DD'))
@@ -33,19 +33,29 @@ export default function FormComponent(props) {
   }
 
   const save = () => {
+    const expiry = moment(`${day}/${month}/${year}`, 'DD/MM/YYYY').toDate()
+
+    // If we are updating
+    if (id) props.onSubmit(id, title, description, questions)
+
+    // If we are creating
+    if (!id) props.onSubmit(title, description, questions)
   }
 
   useEffect(() => {
     if (!props.id) return
 
-    const date = moment(props.expiry)
+    const date = moment(props.expiry).add(1, 'months')
 
+    setId(props.id)
     setTitle(props.title)
     setDescription(props.description)
     setDay(date.format('DD'))
     setMonth(date.format('MM'))
     setYear(date.format('YYYY'))
     setQuestions(props.questions)
+
+    
   }, [])
 
   return (
@@ -93,7 +103,7 @@ export default function FormComponent(props) {
             onChange={e => setDescription(e.target.value)}
           />
 
-          <div className="h5 color-d0 text-left w-100 mb-10">Questions</div>
+          <div className="h5 color-d0 text-left w-100 mb-10 mt-20">Questions</div>
 
           {questions.map((question, index) => {
             return (
@@ -114,6 +124,47 @@ export default function FormComponent(props) {
               </div>
             )
           })}
+
+          <div className="h5 color-d0 text-left w-100 mb-10 mt-20">Expiry</div>
+
+          <div className="row w-100">
+            <div className="flexer column pr-10">
+              <div className="small color-highlight text-left">Day</div>
+              <Select
+                selected={0}
+                size="large"
+                onSelect={(index) => console.log(index)}
+                options={moment().daysInMonth().map(day => {
+                  return { option: day, value: day }
+                })}
+              />
+            </div>
+
+            <div className="flexer column p-10">
+              <div className="small color-highlight text-left">Month</div>
+              <Select
+                selected={0}
+                size="large"
+                onSelect={(index) => console.log(index)}
+                options={moment().months().map(month => {
+                  return { option: month, value: month }
+                })}
+              />
+            </div>
+
+            <div className="flexer column pl-10">
+              <div className="small color-highlight text-left">Year</div>
+              <Select
+                selected={0}
+                size="large"
+                onSelect={(index) => console.log(index)}
+                options={[
+                  { option: moment().year(), value: moment().year() },
+                  { option: moment().year() + 1, value: moment().year() + 1 },
+                ]}
+              />
+            </div>
+          </div>
 
           <div className="row w-100 mt-20">
             <Button

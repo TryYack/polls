@@ -1,4 +1,388 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["static/development/pages/_error.js"],{
+webpackHotUpdate("static/development/pages/_error.js",{
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/array/from.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/is-iterable.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/object/create.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/object/define-property.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/object/get-prototype-of.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/object/set-prototype-of.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/set.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/symbol.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/arrayWithoutHoles.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/assertThisInitialized.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/classCallCheck.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/createClass.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/getPrototypeOf.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/inherits.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/interopRequireDefault.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/iterableToArray.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/nonIterableSpread.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/possibleConstructorReturn.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/setPrototypeOf.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/toConsumableArray.js":
+false,
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/typeof.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/array/from.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/array/is-array.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/is-iterable.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/object/create.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/object/define-property.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/object/get-prototype-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/object/set-prototype-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/set.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/symbol/index.js":
+false,
+
+/***/ "./node_modules/core-js/library/fn/symbol/iterator.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_a-function.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_add-to-unscopables.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_an-instance.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_an-object.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_array-from-iterable.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_array-includes.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_array-methods.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_array-species-constructor.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_array-species-create.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_classof.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_cof.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_collection-strong.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_collection-to-json.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_collection.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_core.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_create-property.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_ctx.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_defined.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_descriptors.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_dom-create.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_enum-bug-keys.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_enum-keys.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_export.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_fails.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_for-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_global.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_has.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_hide.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_html.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_ie8-dom-define.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iobject.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_is-array-iter.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_is-array.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_is-object.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iter-call.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iter-create.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iter-define.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iter-detect.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iter-step.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_iterators.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_library.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_meta.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-create.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-dp.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-dps.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-gopd.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-gopn-ext.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-gopn.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-gops.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-gpo.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-keys-internal.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-keys.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-pie.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_object-sap.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_property-desc.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_redefine-all.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_redefine.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_set-collection-from.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_set-collection-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_set-proto.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_set-species.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_set-to-string-tag.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_shared-key.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_shared.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_string-at.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-absolute-index.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-integer.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-iobject.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-length.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-object.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_to-primitive.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_uid.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_validate-collection.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_wks-define.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_wks-ext.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/_wks.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/core.get-iterator-method.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/core.is-iterable.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.array.from.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.array.is-array.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.array.iterator.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.object.create.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.object.define-property.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.object.get-prototype-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.object.set-prototype-of.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.object.to-string.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.set.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.string.iterator.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es6.symbol.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es7.set.from.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es7.set.of.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es7.set.to-json.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es7.symbol.async-iterator.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/es7.symbol.observable.js":
+false,
+
+/***/ "./node_modules/core-js/library/modules/web.dom.iterable.js":
+false,
 
 /***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_error&absolutePagePath=%2FUsers%2Fjoduplessis%2FWork%2FWeekday%2Fpolls%2Fpages%2F_error.js!./":
 /*!**************************************************************************************************************************************************************************************!*\
@@ -23,211 +407,26 @@
 
 /***/ }),
 
-/***/ "./node_modules/process/browser.js":
-/*!*****************************************!*\
-  !*** ./node_modules/process/browser.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_error&absolutePagePath=next%2Fdist%2Fpages%2F_error!./":
+false,
 
-// shim for using process in browser
-var process = module.exports = {};
+/***/ "./node_modules/next/dist/next-server/lib/amp-context.js":
+false,
 
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
+/***/ "./node_modules/next/dist/next-server/lib/amp.js":
+false,
 
-var cachedSetTimeout;
-var cachedClearTimeout;
+/***/ "./node_modules/next/dist/next-server/lib/head-manager-context.js":
+false,
 
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
+/***/ "./node_modules/next/dist/next-server/lib/head.js":
+false,
 
+/***/ "./node_modules/next/dist/next-server/lib/side-effect.js":
+false,
 
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
-/***/ "./node_modules/react/index.js":
-/*!*******************************************************************************************!*\
-  !*** delegated ./node_modules/react/index.js from dll-reference dll_ea92a4d9664833a26066 ***!
-  \*******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = (__webpack_require__(/*! dll-reference dll_ea92a4d9664833a26066 */ "dll-reference dll_ea92a4d9664833a26066"))("./node_modules/react/index.js");
-
-/***/ }),
+/***/ "./node_modules/next/dist/pages/_error.js":
+false,
 
 /***/ "./node_modules/string-hash/index.js":
 /*!*******************************************!*\
@@ -1059,18 +1258,7 @@ function Error(props) {
 module.exports = __webpack_require__(/*! next-client-pages-loader?page=%2F_error&absolutePagePath=%2FUsers%2Fjoduplessis%2FWork%2FWeekday%2Fpolls%2Fpages%2F_error.js! */"./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_error&absolutePagePath=%2FUsers%2Fjoduplessis%2FWork%2FWeekday%2Fpolls%2Fpages%2F_error.js!./");
 
 
-/***/ }),
-
-/***/ "dll-reference dll_ea92a4d9664833a26066":
-/*!*******************************************!*\
-  !*** external "dll_ea92a4d9664833a26066" ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = dll_ea92a4d9664833a26066;
-
 /***/ })
 
-},[[0,"static/runtime/webpack.js"]]]);
-//# sourceMappingURL=_error.js.map
+})
+//# sourceMappingURL=_error.js.fe8a3e8df490b2509394.hot-update.js.map

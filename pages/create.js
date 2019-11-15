@@ -8,19 +8,26 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
+import { useMutation, useSubscription } from '@apollo/react-hooks'
+
+const ADD_POLL = gql`
+  mutation add_poll($objects: [polls_insert_input!]!) {
+    insert_polls(objects: $objects) {
+      returning {
+        id
+        title
+      }
+    }
+  }
+`;
 
 function Create(props) {
-  const [userId, setUserId] = useState('')
-  const [channelId, setChannelId] = useState('')
-
-  useEffect(() => {
-    // const { router: { query: { payload } }} = props;
-    const payload = btoa(JSON.stringify({ userId: '5db7e3c98476242154d43181', channelId: '5db87f04db059a6d8dc8d068' }))
-    const parsedPayload = JSON.parse(atob(payload))
-
-    setUserId(parsedPayload.userId)
-    setChannelId(parsedPayload.channelId)
-  }, [])
+  const { router: { query: { payload } }} = props
+  const decodedPayload = decodeURI(payload)
+  const jsonPayload = JSON.parse(decodedPayload)
+  const [userId, setUserId] = useState(jsonPayload.userId)
+  const [channelId, setChannelId] = useState(jsonPayload.channelId)
+  const [addPoll, { data }] = useMutation(ADD_POLL)
 
   return (
     <React.Fragment>
@@ -37,8 +44,23 @@ function Create(props) {
           padding: 0px;
         }
 
-        body {
+        html, body {
           background: white;
+          height: 100%;
+        }
+
+        .complete-container {
+          background: white;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0px;
+          top: 0px;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+          align-content: center;
+          justify-content: center;
         }
 
         .container {
@@ -72,18 +94,43 @@ function Create(props) {
         }
       `}</style>
 
+      {data &&
+        <div className="complete-container">
+          <img src="../static/images/no-polls.png" width="60%" className="mb-0"/>
+          <div className="h3 mb-20 color-d2 text-center">Success</div>
+          <div className="h5 color-d0 text-center">You have created a new poll!</div>
+        </div>
+      }
 
-      <div className="polls-listing-container">
-        <FormComponent
-          id={null}
-          userId={null}
-          expiry={null}
-          title={null}
-          currentUserId={userId}
-          description={null}
-          questions={null}
-        />
-      </div>
+      {!data &&
+        <div className="polls-listing-container">
+          <FormComponent
+            id={null}
+            userId={null}
+            expiry={null}
+            title={null}
+            currentUserId={userId}
+            description={null}
+            questions={null}
+            onSubmit={(title, description, questions, expiry) => {
+              addPoll({
+                variables: {
+                  objects: [
+                    {
+                      title,
+                      description,
+                      questions,
+                      expiry,
+                      channel_id: channelId,
+                      user_id: userId
+                    }
+                  ]
+                }
+              })
+            }}
+          />
+        </div>
+      }
     </React.Fragment>
   )
 }
