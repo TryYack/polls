@@ -9,11 +9,22 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 
+const ADD_ANSWER = gql`
+  mutation add_answer($objects: [answers_insert_input!]!) {
+    insert_answers(objects: $objects) {
+      returning {
+        id
+      }
+    }
+  }
+`;
+
 function Index(props) {
   // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
+  const [addAnswer, { data }] = useMutation(ADD_ANSWER)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { channel_id: { _eq: "${channelId}" } }) {
@@ -86,6 +97,7 @@ function Index(props) {
         <div className="polls-listing-container">
           {(loading || !data) && <Spinner />}
           {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
+
           {data &&
             <React.Fragment>
               {(data.polls.length == 0) &&
@@ -104,10 +116,23 @@ function Index(props) {
                     expiry={poll.expiry}
                     title={poll.title}
                     userId={poll.user_id}
-                    currentUserId={userId}
                     description={poll.description}
                     questions={poll.questions || []}
                     answers={poll.answers || []}
+                    currentUserId={userId}
+                    onSubmit={(questionId) => {
+                      addAnswer({
+                        variables: {
+                          objects: [
+                            {
+                              question_id: questionId,
+                              poll_id: pollId,
+                              user_id: userId,
+                            }
+                          ]
+                        }
+                      })
+                    }}
                   />
                 )
               })}

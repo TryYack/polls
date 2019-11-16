@@ -31,7 +31,7 @@ export default function PollComponent(props) {
   }
 
   const answerQuestion = async (questionId) => {
-    console.log(questionId)
+    props.onSubmit(questionId)
     setComplete(true)
   }
 
