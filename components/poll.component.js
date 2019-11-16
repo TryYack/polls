@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import { Progress, Button } from '@weekday/elements'
 import moment from 'moment'
+import { useMutation, useSubscription } from '@apollo/react-hooks'
+
+const DELETE_POLL = gql`
+  mutation delete_polls($id: Int) {
+    delete_polls(
+      where: {id: {_eq: $id}}
+    ) {
+      affected_rows
+    }
+  }
+`;
 
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
   const [total, setTotal] = useState(0)
   const [highest, setHighest] = useState(0)
   const [expired, setExpired] = useState(0)
+  const [deletePoll, deleteData] = useMutation(DELETE_POLL)
 
   const updatePoll = async () => {
-    console.log('Updating')
+    console.log('Open action window')
   }
 
-  const deletePoll = async () => {
+  const confirmDeletePoll = async () => {
     if (confirm("Are you sure?")) {
-      console.log('Deleting')
-    } else {
-      console.log('Not deleting')
+      deletePoll({ variables: { id: props.id } })
     }
   }
 
@@ -133,7 +143,7 @@ export default function PollComponent(props) {
               <strong className="button mr-10 color-blue" onClick={updatePoll}>Update</strong>
             }
             {props.currentUserId == props.userId &&
-              <strong className="button color-red" onClick={deletePoll}>Delete</strong>
+              <strong className="button color-red" onClick={confirmDeletePoll}>Delete</strong>
             }
           </div>
         </div>

@@ -9,22 +9,11 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 
-const DELETE_POLL = gql`
-  mutation delete_polls($id: Int) {
-    delete_polls(
-      where: {id: {_eq: $id}}
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 function Index(props) {
   // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
-  const [deletePoll, deleteData] = useMutation(DELETE_POLL)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { channel_id: { _eq: "${channelId}" } }) {
@@ -111,6 +100,7 @@ function Index(props) {
                 return (
                   <PollComponent
                     key={index}
+                    id={poll.id}
                     expiry={poll.expiry}
                     title={poll.title}
                     userId={poll.user_id}
@@ -130,14 +120,6 @@ function Index(props) {
               theme="blue-border"
               text="Create a new poll"
               onClick={() => console.log('Oopen window')}
-              className="mr-10"
-            />
-            <Button
-              size="small"
-              theme="blue-border"
-              text="Delete a poll"
-              onClick={() => deletePoll({ variables: { id: 3 } })}
-              className="mr-10"
             />
           </div>
         </div>
