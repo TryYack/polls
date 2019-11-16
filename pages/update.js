@@ -43,8 +43,8 @@ function Update(props) {
         user_id
         channel_id
         expiry
-        questions
-        answers {
+        options
+        poll_votes {
           user_id
         }
       }
@@ -140,8 +140,8 @@ function Update(props) {
                       title={poll.title}
                       currentUserId={userId}
                       description={poll.description}
-                      questions={poll.questions}
-                      onSubmit={(pollId, title, description, questions, expiry) => {
+                      options={poll.options}
+                      onSubmit={(pollId, title, description, options, expiry) => {
                         setNotification('Saved')
                         updatePoll({
                           variables: {
@@ -149,7 +149,7 @@ function Update(props) {
                             changes: {
                               title,
                               description,
-                              questions,
+                              options,
                               expiry,
                             }
                           }

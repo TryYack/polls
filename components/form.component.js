@@ -28,29 +28,29 @@ export default function FormComponent(props) {
   const [id, setId] = useState(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [questions, setQuestions] = useState([{id: 0, text: ''}])
+  const [options, setOptions] = useState([{id: 0, text: ''}])
 
   // These all set the index
   const [day, setDay] = useState(today.format('D') - 1)
   const [month, setMonth] = useState(today.format('M') - 1)
   const [year, setYear] = useState(0)
 
-  const addQuestion = () => setQuestions([...questions, {
-    id: questions.length + 1,
+  const addOption = () => setOptions([...options, {
+    id: options.length + 1,
     text: '',
   }])
 
-  const removeQuestion = (index) => {
-    let mutableQuestions = Object.assign([], questions)
-    mutableQuestions.splice(index, 1)
-    setQuestions(mutableQuestions)
+  const removeOption = (index) => {
+    let mutableOptions = Object.assign([], options)
+    mutableOptions.splice(index, 1)
+    setOptions(mutableOptions)
   }
 
-  const updateQuestion = (text, id) => {
-    setQuestions(questions.map(question => {
-      if (id != question.id) return question
+  const updateOption = (text, id) => {
+    setOptions(options.map(option => {
+      if (id != option.id) return option
 
-      return { id: question.id, text }
+      return { id: option.id, text }
     }))
   }
 
@@ -58,10 +58,10 @@ export default function FormComponent(props) {
     const expiry = moment(`${day}/${month}/${year}`, 'DD/MM/YYYY').toDate()
 
     // If we are updating
-    if (id) props.onSubmit(id, title, description, questions, expiry)
+    if (id) props.onSubmit(id, title, description, options, expiry)
 
     // If we are creating
-    if (!id) props.onSubmit(title, description, questions, expiry)
+    if (!id) props.onSubmit(title, description, options, expiry)
   }
 
   const updateMonthDays = () => {
@@ -85,7 +85,7 @@ export default function FormComponent(props) {
     setId(props.id)
     setTitle(props.title)
     setDescription(props.description)
-    setQuestions(props.questions)
+    setOptions(props.options)
 
     setDay(date.format('D') - 1)
     setMonth(date.format('M') - 1)
@@ -139,23 +139,23 @@ export default function FormComponent(props) {
             onChange={e => setDescription(e.target.value)}
           />
 
-          <div className="h5 color-d0 text-left w-100 mb-10 mt-20">Questions</div>
+          <div className="h5 color-d0 text-left w-100 mb-10 mt-20">Options</div>
 
-          {questions.map((question, index) => {
+          {options.map((option, index) => {
             return (
               <div className="row w-100 mb-5" key={index}>
                 <Input
-                  value={question.text}
+                  value={option.text}
                   placeholder="Option text"
                   inputSize="large"
-                  onChange={e => updateQuestion(e.target.value, question.id)}
+                  onChange={e => updateOption(e.target.value, option.id)}
                 />
               <Trash
                   color="#ACB5BD"
                   size="20"
                   thickness="1.5"
                   className="ml-20 button"
-                  onClick={e => removeQuestion(index)}
+                  onClick={e => removeOption(index)}
                 />
               </div>
             )
@@ -201,8 +201,8 @@ export default function FormComponent(props) {
             <Button
               size="small"
               theme="blue-border"
-              text="Add a new question"
-              onClick={addQuestion}
+              text="Add a new option"
+              onClick={addOption}
             />
             <div className="flexer" />
             <Button

@@ -8,9 +8,9 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 
-const ADD_ANSWER = gql`
-  mutation add_answer($objects: [answers_insert_input!]!) {
-    insert_answers(objects: $objects) {
+const ADD_VOTE = gql`
+  mutation add_vote($objects: [poll_votes_insert_input!]!) {
+    insert_poll_votes(objects: $objects) {
       returning {
         id
       }
@@ -24,7 +24,7 @@ function Message(props) {
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
   const [pollId, setPollId] = useState(query.pollId)
-  const [addAnswer, { data }] = useMutation(ADD_ANSWER)
+  const [addVote, { data }] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { id: { _eq: ${pollId} } }) {
@@ -34,10 +34,10 @@ function Message(props) {
         user_id
         channel_id
         expiry
-        questions
-        answers {
+        options
+        poll_votes {
           user_id
-          question_id
+          option_id
         }
       }
     }
@@ -109,15 +109,15 @@ function Message(props) {
                     title={poll.title}
                     userId={poll.user_id}
                     description={poll.description}
-                    questions={poll.questions}
-                    answers={poll.answers}
+                    options={poll.options}
+                    pollVotes={poll.poll_votes}
                     currentUserId={userId}
-                    onSubmit={(questionId) => {
-                      addAnswer({
+                    onSubmit={(optionId) => {
+                      addVote({
                         variables: {
                           objects: [
                             {
-                              question_id: questionId,
+                              option_id: optionId,
                               poll_id: pollId,
                               user_id: userId,
                             }

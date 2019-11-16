@@ -9,9 +9,9 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 
-const ADD_ANSWER = gql`
-  mutation add_answer($objects: [answers_insert_input!]!) {
-    insert_answers(objects: $objects) {
+const ADD_VOTE = gql`
+  mutation add_vote($objects: [poll_votes_insert_input!]!) {
+    insert_poll_votes(objects: $objects) {
       returning {
         id
       }
@@ -24,7 +24,7 @@ function Index(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
-  const [addAnswer, { data }] = useMutation(ADD_ANSWER)
+  const [addVote, { data }] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { channel_id: { _eq: "${channelId}" } }) {
@@ -34,9 +34,9 @@ function Index(props) {
         user_id
         channel_id
         expiry
-        questions
-        answers {
-          question_id
+        options
+        poll_votes {
+          option_id
           user_id
         }
       }
@@ -117,15 +117,15 @@ function Index(props) {
                     title={poll.title}
                     userId={poll.user_id}
                     description={poll.description}
-                    questions={poll.questions || []}
-                    answers={poll.answers || []}
+                    options={poll.options || []}
+                    pollVotes={poll.poll_votes || []}
                     currentUserId={userId}
-                    onSubmit={(questionId) => {
-                      addAnswer({
+                    onSubmit={(optionId) => {
+                      addVote({
                         variables: {
                           objects: [
                             {
-                              question_id: questionId,
+                              option_id: optionId,
                               poll_id: pollId,
                               user_id: userId,
                             }

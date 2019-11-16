@@ -110,15 +110,15 @@ function Create(props) {
             title={null}
             currentUserId={userId}
             description={null}
-            questions={null}
-            onSubmit={(title, description, questions, expiry) => {
+            options={null}
+            onSubmit={(title, description, options, expiry) => {
               addPoll({
                 variables: {
                   objects: [
                     {
                       title,
                       description,
-                      questions,
+                      options,
                       expiry,
                       channel_id: channelId,
                       user_id: userId

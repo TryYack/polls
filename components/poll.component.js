@@ -30,26 +30,26 @@ export default function PollComponent(props) {
     }
   }
 
-  const answerQuestion = async (questionId) => {
-    props.onSubmit(questionId)
+  const voteOption = async (optionId) => {
+    props.onSubmit(optionId)
     setComplete(true)
   }
 
   useEffect(() => {
-    let answerCountHighest = 0
+    let voteCountHighest = 0
 
-    props.questions.map(question => {
+    props.options.map(option => {
       // See if this user has completed the poll
-      props.answers.map(answer => {
-        if (answer.user_id == props.currentUserId) setComplete(true)
+      props.pollVotes.map(vote => {
+        if (vote.user_id == props.currentUserId) setComplete(true)
       })
 
       // Set the score for the highest amount of votes
-      answerCountHighest = props.answers.filter(answer => answer.question_id == question.id).length
+      voteCountHighest = props.pollVotes.filter(vote => vote.option_id == option.id).length
     })
 
-    setTotal(props.answers.length)
-    setHighest(answerCountHighest)
+    setTotal(props.pollVotes.length)
+    setHighest(voteCountHighest)
     setExpired(moment(props.expiry).isBefore(moment()))
   }, [props])
 
@@ -88,15 +88,15 @@ export default function PollComponent(props) {
 
           {(!complete && !expired) &&
             <React.Fragment>
-              {props.questions.map((question, index) => {
+              {props.options.map((option, index) => {
                 return (
                   <div className="progress-container" key={index}>
                     <Button
-                      text={question.text}
+                      text={option.text}
                       theme="blue-border"
                       size="full-width"
                       style={{ height: 35 }}
-                      onClick={() => answerQuestion(question.id)}
+                      onClick={() => voteOption(option.id)}
                     />
                   </div>
                 )
@@ -106,12 +106,12 @@ export default function PollComponent(props) {
 
           {(complete || expired) &&
             <React.Fragment>
-              {props.questions.map((question, index) => {
-                const answers = props.answers.filter(answer => answer.question_id == question.id)
-                const percentage = answers ? 0 : Math.floor((answers.length / total) * 100)
-                const color = answers
+              {props.options.map((option, index) => {
+                const poll_votes = props.pollVotes.filter(vote => vote.option_id == option.id)
+                const percentage = poll_votes ? 0 : Math.floor((poll_votes.length / total) * 100)
+                const color = poll_votes
                                 ? '#f0f2f5'
-                                : answers.length >= highest
+                                : poll_votes.length >= highest
                                   ? '#e9edf2'
                                   : '#f0f2f5'
 
@@ -120,7 +120,7 @@ export default function PollComponent(props) {
                     <Progress
                       percentage={percentage}
                       color={color}
-                      text={question.text}
+                      text={option.text}
                       labels={true}
                     />
                   </div>
