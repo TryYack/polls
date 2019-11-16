@@ -8,38 +8,48 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
+import { useMutation, useSubscription } from '@apollo/react-hooks'
+
+const UPDATE_POLL = gql`
+  mutation update_polls($id: Int, $changes: polls_set_input) {
+    update_polls(
+      where: {id: {_eq: $id}},
+      _set: $changes
+    ) {
+      affected_rows
+      returning {
+        id
+        title
+        description
+      }
+    }
+  }
+`;
 
 function Update(props) {
-  const [query, setQuery] = useState(null)
-  const [userId, setUserId] = useState('')
-  const [channelId, setChannelId] = useState('')
-  const [pollId, setPollId] = useState(null)
-
-  useEffect(() => {
-    // const { router: { query: { payload } }} = props;
-    const payload = btoa(JSON.stringify({ pollId: 1, userId: '5db7e3c98476242154d43181', channelId: '5db87f04db059a6d8dc8d068' }))
-    const parsedPayload = JSON.parse(atob(payload))
-
-    setUserId(parsedPayload.userId)
-    setPollId(parsedPayload.pollId)
-    setChannelId(parsedPayload.channelId)
-    setQuery(gql`
-    	query {
-    	  polls(where: { id: { _eq: ${pollId} } }) {
-    	    id
-    	    title
-          description
+  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068&pollId=1
+  const { router } = props
+  const [notification, setNotification] = useState(null )
+  const [userId, setUserId] = useState(router.query.userId)
+  const [channelId, setChannelId] = useState(router.query.channelId)
+  const [pollId, setPollId] = useState(router.query.pollId)
+  const [updatePoll, { data }] = useMutation(UPDATE_POLL)
+  const [query, setQuery] = useState(gql`
+    query {
+      polls(where: { id: { _eq: ${pollId} } }) {
+        id
+        title
+        description
+        user_id
+        channel_id
+        expiry
+        questions
+        answers {
           user_id
-          channel_id
-          expiry
-          questions
-          answers {
-            user_id
-          }
-    	  }
-    	}
-    `)
-  }, [])
+        }
+      }
+    }
+  `)
 
   return (
     <React.Fragment>
@@ -93,13 +103,14 @@ function Update(props) {
 
       {query &&
         <div className="container column">
+          {notification && <Notification text={notification} />}
+
           <Query
             query={query}
             fetchPolicy={'cache-and-network'}>
             {({ loading, data, error }) => {
               if (loading) return <Spinner />
               if (error) return <div className="error"><Error message="Error loading polls" /></div>
-
 
               // If no polls exist
               if (data.polls.length == 0) {
@@ -130,6 +141,20 @@ function Update(props) {
                       currentUserId={userId}
                       description={poll.description}
                       questions={poll.questions}
+                      onSubmit={(pollId, title, description, questions, expiry) => {
+                        setNotification('Saved')
+                        updatePoll({
+                          variables: {
+                            id: pollId,
+                            changes: {
+                              title,
+                              description,
+                              questions,
+                              expiry,
+                            }
+                          }
+                        })
+                      }}
                     />
                   </div>
                 )
@@ -140,14 +165,6 @@ function Update(props) {
       }
     </React.Fragment>
   )
-}
-
-Update.getInitialProps = (context) => {
-  const { query: { payload } } = context;
-
-  return {
-    cool: true
-  }
 }
 
 export default withData(withRouter(Update))

@@ -22,11 +22,10 @@ const ADD_POLL = gql`
 `;
 
 function Create(props) {
-  const { router: { query: { payload } }} = props
-  const decodedPayload = decodeURI(payload)
-  const jsonPayload = JSON.parse(decodedPayload)
-  const [userId, setUserId] = useState(jsonPayload.userId)
-  const [channelId, setChannelId] = useState(jsonPayload.channelId)
+  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
+  const { router: { query }} = props
+  const [userId, setUserId] = useState(query.userId)
+  const [channelId, setChannelId] = useState(query.channelId)
   const [addPoll, { data }] = useMutation(ADD_POLL)
 
   return (
@@ -96,7 +95,7 @@ function Create(props) {
 
       {data &&
         <div className="complete-container">
-          <img src="../static/images/no-polls.png" width="60%" className="mb-0"/>
+          <img src="../static/images/check.png" width="100" className="mb-30"/>
           <div className="h3 mb-20 color-d2 text-center">Success</div>
           <div className="h5 color-d0 text-center">You have created a new poll!</div>
         </div>
@@ -133,14 +132,6 @@ function Create(props) {
       }
     </React.Fragment>
   )
-}
-
-Create.getInitialProps = (context) => {
-  const { query: { payload } } = context;
-
-  return {
-    cool: true
-  }
 }
 
 export default withData(withRouter(Create))

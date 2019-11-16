@@ -19,51 +19,11 @@ const DELETE_POLL = gql`
   }
 `;
 
-const UPDATE_POLL = gql`
-  mutation update_polls($id: Int, $changes: polls_set_input) {
-    update_polls(
-      where: {id: {_eq: $id}},
-      _set: $changes
-    ) {
-      affected_rows
-      returning {
-        id
-        title
-        description
-      }
-    }
-  }
-`;
-
-const ADD_POLL = gql`
-  mutation add_poll($objects: [polls_insert_input!]!) {
-    insert_polls(objects: $objects) {
-      returning {
-        id
-        title
-      }
-    }
-  }
-`;
-
 function Index(props) {
-  const { router: { query: { payload } }} = props
-  const decodedPayload = decodeURI(payload)
-  const jsonPayload = JSON.parse(decodedPayload)
-  /*
-  console.log(jsonPayload)
-  console.log(
-    encodeURI(
-        JSON.stringify(
-          { userId: '5db7e3c98476242154d43181', channelId: '5db87f04db059a6d8dc8d068' }
-        )
-      )
-  )
-  */
-  const [userId, setUserId] = useState(jsonPayload.userId)
-  const [channelId, setChannelId] = useState(jsonPayload.channelId)
-  const [addPoll, addData] = useMutation(ADD_POLL)
-  const [updatePoll, updateData] = useMutation(UPDATE_POLL)
+  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
+  const { router: { query }} = props
+  const [userId, setUserId] = useState(query.userId)
+  const [channelId, setChannelId] = useState(query.channelId)
   const [deletePoll, deleteData] = useMutation(DELETE_POLL)
   const { loading, error, data } = useSubscription(gql`
     subscription {
@@ -168,8 +128,8 @@ function Index(props) {
             <Button
               size="small"
               theme="blue-border"
-              text="Create a poll"
-              onClick={() => addPoll({ variables: { objects: [{ title: 'cool', description: 'Nice', questions: [{id: 1, text: 'Sweetness'}], channel_id: channelId, user_id: userId }] } })}
+              text="Create a new poll"
+              onClick={() => console.log('Oopen window')}
               className="mr-10"
             />
             <Button
@@ -179,25 +139,11 @@ function Index(props) {
               onClick={() => deletePoll({ variables: { id: 3 } })}
               className="mr-10"
             />
-            <Button
-              size="small"
-              theme="blue-border"
-              text="Update a poll"
-              onClick={() => updatePoll({ variables: { id: 1, changes: { title: 'Updated....' } } })}
-            />
           </div>
         </div>
       </div>
     </React.Fragment>
   )
-}
-
-Index.getInitialProps = (context) => {
-  const { query: { payload } } = context;
-
-  return {
-    cool: true
-  }
 }
 
 export default withData(withRouter(Index))

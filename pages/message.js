@@ -143,12 +143,4 @@ function Message(props) {
   )
 }
 
-Message.getInitialProps = (context) => {
-  const { query: { payload } } = context;
-
-  return {
-    cool: true
-  }
-}
-
 export default withData(withRouter(Message))
