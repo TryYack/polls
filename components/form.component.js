@@ -55,7 +55,7 @@ export default function FormComponent(props) {
   }
 
   const save = () => {
-    const expiry = moment(`${day}/${month}/${year}`, 'DD/MM/YYYY').toDate()
+    const expiry = moment(`${days[day].value}/${months[month].value}/${years[year].value}`, 'DD/MM/YYYY').format("YYYY-MM-DD HH:mm:ss")
 
     // If we are updating
     if (id) props.onSubmit(id, title, description, options, expiry)
@@ -76,8 +76,8 @@ export default function FormComponent(props) {
   }
 
   useEffect(() => {
+    // Don't do anything if it's a create
     if (!props.id) return updateMonthDays()
-    if (!props.expiry) return updateMonthDays()
 
     const date = moment(props.expiry)
     const yearIndex = years.map(y => y.value).indexOf(parseInt(date.format('YYYY')))
@@ -86,11 +86,9 @@ export default function FormComponent(props) {
     setTitle(props.title)
     setDescription(props.description)
     setOptions(props.options)
-
     setDay(date.format('D') - 1)
     setMonth(date.format('M') - 1)
     setYear(yearIndex == -1 ? 0 : yearIndex)
-
     updateMonthDays()
   }, [])
 

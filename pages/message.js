@@ -7,6 +7,7 @@ import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
+import { useMutation, useSubscription } from '@apollo/react-hooks'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -24,7 +25,7 @@ function Message(props) {
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
   const [pollId, setPollId] = useState(query.pollId)
-  const [addVote, { data }] = useMutation(ADD_VOTE)
+  const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { id: { _eq: ${pollId} } }) {
@@ -98,7 +99,6 @@ function Message(props) {
         <div className="polls-listing-container" >
           {(loading || !data) && <Spinner />}
           {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
-
           {data &&
             <React.Fragment>
               {data.polls.map((poll, index) => {

@@ -24,7 +24,7 @@ function Index(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
-  const [addVote, { data }] = useMutation(ADD_VOTE)
+  const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { channel_id: { _eq: "${channelId}" } }) {
@@ -97,7 +97,6 @@ function Index(props) {
         <div className="polls-listing-container">
           {(loading || !data) && <Spinner />}
           {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
-
           {data &&
             <React.Fragment>
               {(data.polls.length == 0) &&

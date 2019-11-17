@@ -1049,7 +1049,7 @@ function Error(props) {
 
 /***/ }),
 
-/***/ 1:
+/***/ 0:
 /*!******************************************************************************************************************************************!*\
   !*** multi next-client-pages-loader?page=%2F_error&absolutePagePath=%2FUsers%2Fjoduplessis%2FWork%2FWeekday%2Fpolls%2Fpages%2F_error.js ***!
   \******************************************************************************************************************************************/
@@ -1072,5 +1072,5 @@ module.exports = dll_ea92a4d9664833a26066;
 
 /***/ })
 
-},[[1,"static/runtime/webpack.js"]]]);
+},[[0,"static/runtime/webpack.js"]]]);
 //# sourceMappingURL=_error.js.map

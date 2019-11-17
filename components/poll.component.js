@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Progress, Button } from '@weekday/elements'
 import moment from 'moment'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
+import gql from 'graphql-tag'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {
@@ -108,7 +109,7 @@ export default function PollComponent(props) {
             <React.Fragment>
               {props.options.map((option, index) => {
                 const poll_votes = props.pollVotes.filter(vote => vote.option_id == option.id)
-                const percentage = poll_votes ? 0 : Math.floor((poll_votes.length / total) * 100)
+                const percentage = poll_votes.length == 0 ? 0 : Math.floor((poll_votes.length / total) * 100)
                 const color = poll_votes
                                 ? '#f0f2f5'
                                 : poll_votes.length >= highest
@@ -134,7 +135,7 @@ export default function PollComponent(props) {
               <span className="mr-10">This poll expired {moment(props.expiry).fromNow()}</span>
             }
             {(!expired && props.expiry) &&
-              <span className="mr-10">This poll expires at {moment(props.expiry).format('LL')}</span>
+              <span className="mr-10">This poll expires on {moment(props.expiry).format('LL')}</span>
             }
             {(!expired && !props.expiry) &&
               <span className="mr-10">This poll does not expire</span>
