@@ -24,7 +24,7 @@ function Message(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
-  const [pollId, setPollId] = useState(query.pollId)
+  const [pollId, setPollId] = useState(query.payload)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
@@ -61,19 +61,12 @@ function Message(props) {
 
         body {
           background: white;
+          overflow: scroll; 
         }
 
         .container {
           background: white;
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          left: 0px;
-          top: 0px;
-          display: flex;
-          align-items: stretch;
-          align-content: center;
-          justify-content: center;
+          padding: 20px;
         }
 
         .error {
@@ -82,57 +75,45 @@ function Message(props) {
           left: 0px;
           width: 100%;
         }
-
-        .polls-listing-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          align-content: center;
-          justify-content: flex-start;
-          padding: 20px;
-        }
       `}</style>
 
 
-      <div className="container column">
-        <div className="polls-listing-container" >
-          {(loading || !data) && <Spinner />}
-          {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
-          {data &&
-            <React.Fragment>
-              {data.polls.map((poll, index) => {
-                return (
-                  <PollComponent
-                    key={index}
-                    expiry={poll.expiry}
-                    title={poll.title}
-                    userId={poll.user_id}
-                    description={poll.description}
-                    options={poll.options}
-                    pollVotes={poll.poll_votes}
-                    currentUserId={userId}
-                    onSubmit={(optionId) => {
-                      addVote({
-                        variables: {
-                          objects: [
-                            {
-                              option_id: optionId,
-                              poll_id: pollId,
-                              user_id: userId,
-                            }
-                          ]
-                        }
-                      })
-                    }}
-                  />
-                )
-              })}
-            </React.Fragment>
-          }
-        </div>
+      <div className="container">
+        {(loading || !data) && <Spinner />}
+        {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
+        {data &&
+          <React.Fragment>
+            {data.polls.map((poll, index) => {
+              return (
+                <PollComponent
+                  tools={false}
+                  key={index}
+                  expiry={poll.expiry}
+                  title={poll.title}
+                  userId={poll.user_id}
+                  description={poll.description}
+                  options={poll.options}
+                  pollVotes={poll.poll_votes}
+                  currentUserId={userId}
+                  onSubmit={(optionId) => {
+                    addVote({
+                      variables: {
+                        objects: [
+                          {
+                            option_id: optionId,
+                            poll_id: pollId,
+                            user_id: userId,
+                          }
+                        ]
+                      }
+                    })
+                  }}
+                />
+              )
+            })}
+          </React.Fragment>
+        }
       </div>
-
     </React.Fragment>
   )
 }

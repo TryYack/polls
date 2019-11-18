@@ -59,6 +59,7 @@ export default function PollComponent(props) {
       <style jsx>{`
         .poll-container {
           width: 100%;
+          height: fit-content;
           display: flex;
           flex-direction: column;
           align-items: stretch;
@@ -140,10 +141,10 @@ export default function PollComponent(props) {
             {(!expired && !props.expiry) &&
               <span className="mr-10">This poll does not expire</span>
             }
-            {props.currentUserId == props.userId &&
+            {(props.currentUserId == props.userId && props.tools) &&
               <strong className="button mr-10 color-blue" onClick={updatePoll}>Update</strong>
             }
-            {props.currentUserId == props.userId &&
+            {(props.currentUserId == props.userId && props.tools) &&
               <strong className="button color-red" onClick={confirmDeletePoll}>Delete</strong>
             }
           </div>

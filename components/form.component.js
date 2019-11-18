@@ -120,8 +120,6 @@ export default function FormComponent(props) {
 
       <div className="poll-container">
         <div className="poll-inner">
-          <div className="h4 color-d3 text-left w-100 mb-20">Create a new poll</div>
-
           <Input
             value={title}
             inputSize="large"

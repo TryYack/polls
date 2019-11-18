@@ -110,6 +110,7 @@ function Index(props) {
               {data.polls.map((poll, index) => {
                 return (
                   <PollComponent
+                    tools={true}
                     key={index}
                     id={poll.id}
                     expiry={poll.expiry}
