@@ -8,6 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
+import { openAppModal } from '../util'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -96,7 +97,7 @@ function Index(props) {
       <div className="container column">
         <div className="polls-listing-container">
           {(loading || !data) && <Spinner />}
-          {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
+          {((error || !data) && !loading) && <div className="error"><Error message="Error loading polls" /></div>}
           {data &&
             <React.Fragment>
               {(data.polls.length == 0) &&
@@ -144,7 +145,10 @@ function Index(props) {
               size="small"
               theme="blue-border"
               text="Create a new poll"
-              onClick={() => console.log('Oopen window')}
+              onClick={() => openAppModal({
+                name: 'Create a poll',
+                url: 'http://localhost:3000/create',
+              })}
             />
           </div>
         </div>

@@ -9,6 +9,7 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
+import { closeAppModal } from '../util'
 
 const ADD_POLL = gql`
   mutation add_poll($objects: [polls_insert_input!]!) {
@@ -112,6 +113,7 @@ function Create(props) {
             description={null}
             options={null}
             onSubmit={(title, description, options, expiry) => {
+              // Add the poll first
               addPoll({
                 variables: {
                   objects: [
@@ -126,6 +128,9 @@ function Create(props) {
                   ]
                 }
               })
+
+              // And then close the modal
+              // closeAppModal()
             }}
           />
         </div>

@@ -3,6 +3,7 @@ import { Progress, Button } from '@weekday/elements'
 import moment from 'moment'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import gql from 'graphql-tag'
+import { openAppModal } from '../util'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {
@@ -21,8 +22,15 @@ export default function PollComponent(props) {
   const [expired, setExpired] = useState(0)
   const [deletePoll, deleteData] = useMutation(DELETE_POLL)
 
+  const sharePoll = async () => {
+
+  }
+
   const updatePoll = async () => {
-    console.log('Open action window')
+    openAppModal({
+      name: 'Update poll',
+      url: 'http://localhost:3000/update?pollId=' + props.id,
+    })
   }
 
   const confirmDeletePoll = async () => {
@@ -141,13 +149,20 @@ export default function PollComponent(props) {
             {(!expired && !props.expiry) &&
               <span className="mr-10">This poll does not expire</span>
             }
-            {(props.currentUserId == props.userId && props.tools) &&
-              <strong className="button mr-10 color-blue" onClick={updatePoll}>Update</strong>
-            }
-            {(props.currentUserId == props.userId && props.tools) &&
-              <strong className="button color-red" onClick={confirmDeletePoll}>Delete</strong>
-            }
           </div>
+
+          {props.tools &&
+            <div className="p color-d1 text-left w-100 mt-5">
+              <strong className="button color-blue" onClick={sharePoll}>Share to channel</strong>
+
+              {(props.currentUserId == props.userId) &&
+                <strong className="button ml-10 color-blue" onClick={updatePoll}>Update</strong>
+              }
+              {(props.currentUserId == props.userId) &&
+                <strong className="button ml-10 color-red" onClick={confirmDeletePoll}>Delete</strong>
+              }
+            </div>
+          }
         </div>
       </div>
     </React.Fragment>

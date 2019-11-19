@@ -29,7 +29,7 @@ const UPDATE_POLL = gql`
 function Update(props) {
   // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068&pollId=1
   const { router } = props
-  const [notification, setNotification] = useState(null )
+  const [notification, setNotification] = useState(null)
   const [userId, setUserId] = useState(router.query.userId)
   const [channelId, setChannelId] = useState(router.query.channelId)
   const [pollId, setPollId] = useState(router.query.pollId)

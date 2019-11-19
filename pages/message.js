@@ -8,15 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-
-
-window.addEventListener('load', () => {
-  console.log('Loaded')
-  //console.log(document.body.clientHeight, e)
-})
-
-console.log(window)
-
+import { autoAdjustMessageHeight } from '../util'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -54,26 +46,8 @@ function Message(props) {
   `)
 
   useEffect(() => {
-    if (!loading && !error) return
-
-
-    setTimeout(() => {
-      window.location.search.split('&').map(q => {
-        const parts = q.split('=')
-
-        if (parts[0] == 'weekdayId') {
-          window.top.postMessage({
-            type: 'weekday',
-            payload: {
-              weekdayId: parts[1],
-              scrollHeight: document.documentElement.scrollHeight,
-            }
-          }, '*')
-        }
-      })
-    }, 1050)
-
-  }, [loading, error])
+    autoAdjustMessageHeight()
+  }, [])
 
   return (
     <React.Fragment>
