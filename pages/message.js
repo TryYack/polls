@@ -86,8 +86,13 @@ function Message(props) {
       <div className="container">
         {(loading || !data) && <Spinner />}
         {((error || !data) && !loading) && <div className="error"><Error message="Error loading polls" /></div>}
+
         {data &&
           <React.Fragment>
+            {(data.polls.length == 0) &&
+              <div className="error"><Error message="This poll doesn't exist anymore" /></div>
+            }
+
             {data.polls.map((poll, index) => {
               return (
                 <PollComponent

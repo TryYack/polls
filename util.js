@@ -27,14 +27,24 @@ export const autoAdjustMessageHeight = () => {
 export const closeAppModal = () => {
   postAppMessage({
     type: 'DISPATCH_APP_ACTION',
-    action: { type: 'modal-close' }
+    action: {
+      type: 'modal-close',
+      icon: null,
+      name: null,
+      url: null,
+    }
   })
 }
 
 export const closeAppPanel = () => {
   postAppMessage({
     type: 'DISPATCH_APP_ACTION',
-    action: { type: 'panel-close' }
+    action: {
+      type: 'panel-close',
+      icon: null,
+      name: null,
+      url: null,
+    }
   })
 }
 
@@ -43,6 +53,7 @@ export const openAppPanel = ({ name, url }) => {
     type: 'DISPATCH_APP_ACTION',
     action: {
       type: 'panel',
+      icon: null,
       name,
       url,
     }
@@ -54,6 +65,7 @@ export const openAppModal = ({ name, url }) => {
     type: 'DISPATCH_APP_ACTION',
     action: {
       type: 'modal',
+      icon: null,
       name,
       url,
     }

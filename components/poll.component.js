@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Progress, Button } from '@weekday/elements'
 import moment from 'moment'
+import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
+import { Error } from '@weekday/elements'
 import gql from 'graphql-tag'
 import { openAppModal } from '../util'
 
@@ -20,10 +22,32 @@ export default function PollComponent(props) {
   const [total, setTotal] = useState(0)
   const [highest, setHighest] = useState(0)
   const [expired, setExpired] = useState(0)
+  const [error, setError] = useState(null)
   const [deletePoll, deleteData] = useMutation(DELETE_POLL)
 
   const sharePoll = async () => {
-
+    try {
+      const result = await fetch('http://localhost:8181/v1/webhook', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token 31473fc6-fee7-11e9-8f0b-362b9e155667',
+        },
+        redirect: 'follow',
+        referrer: 'no-referrer',
+        body: JSON.stringify({
+          message: 'Yo yo yo',
+          attachments: [],
+          channelId: props.channelId,
+          payload: props.id,
+        }),
+      })
+    } catch (e) {
+      setError('Could not share poll')
+      setTimeout(() => setError(null), 5000)
+    }
   }
 
   const updatePoll = async () => {
@@ -92,6 +116,8 @@ export default function PollComponent(props) {
       `}</style>
 
       <div className="poll-container">
+        {error && <Error message="Error loading polls" />}
+        
         <div className="poll-inner">
           <div className="h4 color-d3 text-left w-100 mb-0">{props.title}</div>
           <div className="h5 color-d0 text-left w-100 mb-10">{props.description}</div>

@@ -115,8 +115,9 @@ function Index(props) {
                     key={index}
                     id={poll.id}
                     expiry={poll.expiry}
+                    channelId={channelId}
+                    userId={userId}
                     title={poll.title}
-                    userId={poll.user_id}
                     description={poll.description}
                     options={poll.options || []}
                     pollVotes={poll.poll_votes || []}
