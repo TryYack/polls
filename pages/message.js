@@ -9,6 +9,15 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 
+
+window.addEventListener('load', () => {
+  console.log('Loaded')
+  //console.log(document.body.clientHeight, e)
+})
+
+console.log(window)
+
+
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
     insert_poll_votes(objects: $objects) {
@@ -44,6 +53,28 @@ function Message(props) {
     }
   `)
 
+  useEffect(() => {
+    if (!loading && !error) return
+
+
+    setTimeout(() => {
+      window.location.search.split('&').map(q => {
+        const parts = q.split('=')
+
+        if (parts[0] == 'weekdayId') {
+          window.top.postMessage({
+            type: 'weekday',
+            payload: {
+              weekdayId: parts[1],
+              scrollHeight: document.documentElement.scrollHeight,
+            }
+          }, '*')
+        }
+      })
+    }, 1050)
+
+  }, [loading, error])
+
   return (
     <React.Fragment>
       <Head>
@@ -61,7 +92,7 @@ function Message(props) {
 
         body {
           background: white;
-          overflow: scroll; 
+          overflow: scroll;
         }
 
         .container {
@@ -80,7 +111,7 @@ function Message(props) {
 
       <div className="container">
         {(loading || !data) && <Spinner />}
-        {(error || !data) && <div className="error"><Error message="Error loading polls" /></div>}
+        {((error || !data) && !loading) && <div className="error"><Error message="Error loading polls" /></div>}
         {data &&
           <React.Fragment>
             {data.polls.map((poll, index) => {
