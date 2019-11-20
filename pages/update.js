@@ -32,6 +32,7 @@ function Update(props) {
   const [notification, setNotification] = useState(null)
   const [userId, setUserId] = useState(router.query.userId)
   const [channelId, setChannelId] = useState(router.query.channelId)
+  const [teamId, setTeamId] = useState(router.query.teamId)
   const [pollId, setPollId] = useState(router.query.pollId)
   const [updatePoll, { data }] = useMutation(UPDATE_POLL)
   const [query, setQuery] = useState(gql`

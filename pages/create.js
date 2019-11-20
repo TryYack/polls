@@ -27,6 +27,7 @@ function Create(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
+  const [teamId, setTeamId] = useState(query.teamId)
   const [addPoll, { data }] = useMutation(ADD_POLL)
 
   return (

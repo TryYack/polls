@@ -41,6 +41,7 @@ export default function PollComponent(props) {
           message: 'Yo yo yo',
           attachments: [],
           channelId: props.channelId,
+          teamId: props.teamId,
           payload: props.id,
         }),
       })
@@ -117,7 +118,7 @@ export default function PollComponent(props) {
 
       <div className="poll-container">
         {error && <Error message="Error loading polls" />}
-        
+
         <div className="poll-inner">
           <div className="h4 color-d3 text-left w-100 mb-0">{props.title}</div>
           <div className="h5 color-d0 text-left w-100 mb-10">{props.description}</div>

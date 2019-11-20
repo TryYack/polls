@@ -25,6 +25,7 @@ function Message(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
+  const [teamId, setTeamId] = useState(query.teamId)
   const [pollId, setPollId] = useState(query.payload)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
@@ -105,6 +106,8 @@ function Message(props) {
                   options={poll.options}
                   pollVotes={poll.poll_votes}
                   currentUserId={userId}
+                  channelId={channelId}
+                  teamId={teamId}
                   onSubmit={(optionId) => {
                     addVote({
                       variables: {

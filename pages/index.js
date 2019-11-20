@@ -25,6 +25,7 @@ function Index(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [channelId, setChannelId] = useState(query.channelId)
+  const [teamId, setTeamId] = useState(query.teamId)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
@@ -116,12 +117,13 @@ function Index(props) {
                     id={poll.id}
                     expiry={poll.expiry}
                     channelId={channelId}
+                    teamId={teamId}
                     userId={userId}
+                    currentUserId={userId}
                     title={poll.title}
                     description={poll.description}
                     options={poll.options || []}
                     pollVotes={poll.poll_votes || []}
-                    currentUserId={userId}
                     onSubmit={(optionId) => {
                       addVote({
                         variables: {
