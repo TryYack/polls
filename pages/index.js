@@ -21,15 +21,13 @@ const ADD_VOTE = gql`
 `;
 
 function Index(props) {
-  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
-  const [channelId, setChannelId] = useState(query.channelId)
-  const [teamId, setTeamId] = useState(query.teamId)
+  const [token, setToken] = useState(query.token)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
-      polls(where: { channel_id: { _eq: "${channelId}" } }) {
+      polls(where: { channel_id: { _eq: "${token}" } }) {
         id
         title
         description
@@ -116,8 +114,7 @@ function Index(props) {
                     key={index}
                     id={poll.id}
                     expiry={poll.expiry}
-                    channelId={channelId}
-                    teamId={teamId}
+                    token={token}
                     userId={userId}
                     currentUserId={userId}
                     title={poll.title}

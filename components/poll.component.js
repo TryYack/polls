@@ -33,15 +33,14 @@ export default function PollComponent(props) {
         cache: 'no-cache',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token 31473fc6-fee7-11e9-8f0b-362b9e155667',
+          'Authorization': 'bearer 31473fc6-fee7-11e9-8f0b-362b9e155667',
         },
         redirect: 'follow',
         referrer: 'no-referrer',
         body: JSON.stringify({
           message: 'Yo yo yo',
           attachments: [],
-          channelId: props.channelId,
-          teamId: props.teamId,
+          token: props.token,
           payload: props.id,
         }),
       })

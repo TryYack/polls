@@ -24,8 +24,7 @@ function Message(props) {
   // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
-  const [channelId, setChannelId] = useState(query.channelId)
-  const [teamId, setTeamId] = useState(query.teamId)
+  const [token, setToken] = useState(query.token)
   const [pollId, setPollId] = useState(query.payload)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
@@ -106,8 +105,7 @@ function Message(props) {
                   options={poll.options}
                   pollVotes={poll.poll_votes}
                   currentUserId={userId}
-                  channelId={channelId}
-                  teamId={teamId}
+                  token={token}
                   onSubmit={(optionId) => {
                     addVote({
                       variables: {

@@ -10,12 +10,12 @@ export const autoAdjustMessageHeight = () => {
       window.location.search.split('&').map(query => {
         const parts = query.split('=')
 
-        if (parts[0] == 'weekdayId' && parts.length == 2) {
-          const weekdayId = parts[1]
+        if (parts[0] == 'resizeId' && parts.length == 2) {
+          const resizeId = parts[1]
 
           postAppMessage({
             type: 'AUTO_ADJUST_MESSAGE_HEIGHT',
-            weekdayId,
+            resizeId,
             scrollHeight,
           })
         }

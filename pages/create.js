@@ -26,8 +26,7 @@ function Create(props) {
   // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
-  const [channelId, setChannelId] = useState(query.channelId)
-  const [teamId, setTeamId] = useState(query.teamId)
+  const [token, setToken] = useState(query.token)
   const [addPoll, { data }] = useMutation(ADD_POLL)
 
   return (
@@ -123,7 +122,7 @@ function Create(props) {
                       description,
                       options,
                       expiry,
-                      channel_id: channelId,
+                      channel_id: token,
                       user_id: userId
                     }
                   ]
