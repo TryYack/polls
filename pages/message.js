@@ -8,7 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { autoAdjustMessageHeight } from '../util'
+import { autoAdjustMessageHeight } from '@weekday/dev-kit'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -34,7 +34,7 @@ function Message(props) {
         title
         description
         user_id
-        channel_id
+        channel_token
         expiry
         options
         poll_votes {

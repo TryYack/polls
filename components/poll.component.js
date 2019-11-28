@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { Error } from '@weekday/elements'
 import gql from 'graphql-tag'
-import { openAppModal } from '../util'
+import { openAppModal } from '@weekday/dev-kit'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {
@@ -51,10 +51,7 @@ export default function PollComponent(props) {
   }
 
   const updatePoll = async () => {
-    openAppModal({
-      name: 'Update poll',
-      url: 'http://localhost:3000/update?pollId=' + props.id,
-    })
+    openAppModal('Update poll', 'http://localhost:3000/update?pollId=' + props.id)
   }
 
   const confirmDeletePoll = async () => {

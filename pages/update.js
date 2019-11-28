@@ -40,7 +40,7 @@ function Update(props) {
         title
         description
         user_id
-        channel_id
+        channel_token
         expiry
         options
         poll_votes {
