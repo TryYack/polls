@@ -8,7 +8,9 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { openAppModal } from '@weekday/dev-kit'
+import { initDevKit, openAppModal } from '@weekday/dev-kit'
+
+init('HARDCODED_TOKEN')
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {

@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { Error } from '@weekday/elements'
 import gql from 'graphql-tag'
-import { openAppModal } from '@weekday/dev-kit'
+import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@weekday/dev-kit'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {
@@ -26,24 +26,18 @@ export default function PollComponent(props) {
   const [deletePoll, deleteData] = useMutation(DELETE_POLL)
 
   const sharePoll = async () => {
+    const channelToken = props.token
+    const message = 'Here is a poll'
+    const attachments = null
+    const resourceId = props.id
+
     try {
-      const result = await fetch('http://localhost:8181/v1/webhook', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'bearer 31473fc6-fee7-11e9-8f0b-362b9e155667',
-        },
-        redirect: 'follow',
-        referrer: 'no-referrer',
-        body: JSON.stringify({
-          message: 'Yo yo yo',
-          attachments: [],
-          token: props.token,
-          resourceId: props.id,
-        }),
-      })
+      await createChannelMessage(
+        channelToken,
+        message,
+        attachments,
+        resourceId
+      )
     } catch (e) {
       setError('Could not share poll')
       setTimeout(() => setError(null), 5000)
@@ -56,7 +50,11 @@ export default function PollComponent(props) {
 
   const confirmDeletePoll = async () => {
     if (confirm("Are you sure?")) {
-      deletePoll({ variables: { id: props.id } })
+      const channelToken = props.token
+      const resourceId = props.id
+
+      deletePoll({ variables: { id: resourceId } })
+      deleteChannelMessagesWithResourceId(channelToken, resourceId)
     }
   }
 
