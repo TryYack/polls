@@ -41,7 +41,7 @@ export default function PollComponent(props) {
           message: 'Yo yo yo',
           attachments: [],
           token: props.token,
-          payload: props.id,
+          resourceId: props.id,
         }),
       })
     } catch (e) {

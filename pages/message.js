@@ -25,7 +25,7 @@ function Message(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [token, setToken] = useState(query.token)
-  const [pollId, setPollId] = useState(query.payload)
+  const [pollId, setPollId] = useState(query.resourceId)
   const [addVote, addVoteData] = useMutation(ADD_VOTE)
   const { loading, error, data } = useSubscription(gql`
     subscription {
