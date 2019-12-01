@@ -45,7 +45,7 @@ export default function PollComponent(props) {
   }
 
   const updatePoll = async () => {
-    openAppModal('Update poll', 'http://localhost:3000/update?pollId=' + props.id)
+    openAppModal('Update poll', 'http://localhost:3000/update?pollId=' + props.id, '50%', '50%', props.token)
   }
 
   const confirmDeletePoll = async () => {

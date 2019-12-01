@@ -130,7 +130,7 @@ function Create(props) {
               })
 
               // And then close the modal
-              // closeAppModal()
+              closeAppModal()
             }}
           />
         </div>
