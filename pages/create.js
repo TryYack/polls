@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@weekday/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@yack/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { closeAppModal } from '@weekday/dev-kit'
+import { closeAppModal } from '@yack/dev-kit'
 
 const ADD_POLL = gql`
   mutation add_poll($objects: [polls_insert_input!]!) {

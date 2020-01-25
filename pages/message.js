@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@weekday/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@yack/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { autoAdjustMessageHeight } from '@weekday/dev-kit'
+import { autoAdjustMessageHeight } from '@yack/dev-kit'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {

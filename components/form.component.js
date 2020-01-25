@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Progress, Button, Input, Textarea, Select } from '@weekday/elements'
+import { Progress, Button, Input, Textarea, Select } from '@yack/elements'
 import moment from 'moment'
 import { Trash } from 'react-feather'
 

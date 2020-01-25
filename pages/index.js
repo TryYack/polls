@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@weekday/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@yack/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { initDevKit, openAppModal } from '@weekday/dev-kit'
+import { initDevKit, openAppModal } from '@yack/dev-kit'
 
 initDevKit('cca4ba34-880e-42b8-a1d0-4402cc26b2a0')
 
