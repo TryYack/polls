@@ -10,7 +10,7 @@ import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
-initDevKit('cca4ba34-880e-42b8-a1d0-4402cc26b2a0')
+initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d')
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -44,6 +44,8 @@ function Index(props) {
       }
     }
   `)
+
+  console.log(loading, error, data)
 
   return (
     <React.Fragment>

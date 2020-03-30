@@ -7,7 +7,7 @@ import ws from 'ws'
 var WebSocketClient = require('websocket').client
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:8080/v1/graphql`,
+  uri: `ws://yack-apps.herokuapp.com/v1/graphql`,
   options: {
     reconnect: true
   },
@@ -15,7 +15,7 @@ const wsLink = new WebSocketLink({
 })
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:8080/v1/graphql',
+  uri: 'http://yack-apps.herokuapp.com/v1/graphql',
 })
 
 const link = split(
