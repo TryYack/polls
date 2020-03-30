@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { Error } from '@yack/elements'
 import gql from 'graphql-tag'
-import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@yack/dev-kit'
+import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@tryyack/dev-kit'
 
 const DELETE_POLL = gql`
   mutation delete_polls($id: Int) {

@@ -9,7 +9,7 @@ import withData from '../config'
 import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { closeAppModal } from '@yack/dev-kit'
+import { closeAppModal } from '@tryyack/dev-kit'
 
 const ADD_POLL = gql`
   mutation add_poll($objects: [polls_insert_input!]!) {

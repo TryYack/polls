@@ -8,7 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { autoAdjustMessageHeight } from '@yack/dev-kit'
+import { autoAdjustMessageHeight } from '@tryyack/dev-kit'
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {

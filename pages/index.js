@@ -8,7 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { initDevKit, openAppModal } from '@yack/dev-kit'
+import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
 initDevKit('cca4ba34-880e-42b8-a1d0-4402cc26b2a0')
 
