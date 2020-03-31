@@ -29,10 +29,12 @@ function Create(props) {
   const [token, setToken] = useState(query.token)
   const [addPoll, { data }] = useMutation(ADD_POLL)
 
+  console.log(props.router.query)
+
   return (
     <React.Fragment>
       <Head>
-        <title>Polls</title>
+        <title>Poll</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link href="/static/css/styles.css" rel="stylesheet" />
         <link href="/static/images/favicon.png" rel="shortcut icon" />

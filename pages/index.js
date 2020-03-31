@@ -10,7 +10,7 @@ import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
-initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d')
+
 
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
@@ -45,7 +45,10 @@ function Index(props) {
     }
   `)
 
-  console.log(loading, error, data)
+  // This needs to run inside window
+  useEffect(() => {
+    initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d')
+  }, [])
 
   return (
     <React.Fragment>
@@ -149,7 +152,9 @@ function Index(props) {
               size="small"
               theme="blue-border"
               text="Create a new poll"
-              onClick={() => openAppModal('Create a poll', 'http://localhost:3000/create', '50%', '50%', token)}
+              onClick={() => {
+                openAppModal('Create a poll', 'http://localhost:3001/create', '50%', '50%', token)
+              }}
             />
           </div>
         </div>
