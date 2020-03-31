@@ -10,8 +10,6 @@ import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
-
-
 const ADD_VOTE = gql`
   mutation add_vote($objects: [poll_votes_insert_input!]!) {
     insert_poll_votes(objects: $objects) {
@@ -153,7 +151,7 @@ function Index(props) {
               theme="blue-border"
               text="Create a new poll"
               onClick={() => {
-                openAppModal('Create a poll', 'http://localhost:3001/create', '50%', '50%', token)
+                openAppModal('Create a poll', 'http://localhost:3001/create', '50%', '80%', token)
               }}
             />
           </div>

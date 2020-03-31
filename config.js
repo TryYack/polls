@@ -15,7 +15,7 @@ const wsLink = new WebSocketLink({
 })
 
 const httpLink = new HttpLink({
-  uri: 'http://yack-apps.herokuapp.com/v1/graphql',
+  uri: 'https://yack-apps.herokuapp.com/v1/graphql',
 })
 
 const link = split(

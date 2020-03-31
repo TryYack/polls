@@ -23,13 +23,10 @@ const ADD_POLL = gql`
 `;
 
 function Create(props) {
-  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [token, setToken] = useState(query.token)
-  const [addPoll, { data }] = useMutation(ADD_POLL)
-
-  console.log(props.router.query)
+  const [addPoll, { data, error, loading }] = useMutation(ADD_POLL)
 
   return (
     <React.Fragment>
@@ -96,6 +93,9 @@ function Create(props) {
         }
       `}</style>
 
+      {loading && <Spinner />}
+      {error && <div className="error"><Error message="Error loading polls" /></div>}
+
       {data &&
         <div className="complete-container">
           <img src="../static/images/check.png" width="100" className="mb-30"/>
@@ -115,7 +115,6 @@ function Create(props) {
             description={null}
             options={null}
             onSubmit={(title, description, options, expiry) => {
-              // Add the poll first
               addPoll({
                 variables: {
                   objects: [

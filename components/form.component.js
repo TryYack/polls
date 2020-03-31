@@ -24,14 +24,11 @@ export default function FormComponent(props) {
     { option: today.year() + 1, value: today.year() + 1 },
   ]
   const [days, setDays] = useState(null)
-
   const [id, setId] = useState(null)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [options, setOptions] = useState([{id: 0, text: ''}])
-
-  // These all set the index
-  const [day, setDay] = useState(today.format('D') - 1)
+  const [day, setDay] = useState(0)
   const [month, setMonth] = useState(today.format('M') - 1)
   const [year, setYear] = useState(0)
 
@@ -64,32 +61,35 @@ export default function FormComponent(props) {
     if (!id) props.onSubmit(title, description, options, expiry)
   }
 
-  const updateMonthDays = () => {
-    const daysInMonth = moment(`${day}/${month}/${year}`, 'DD/MM/YYYY').daysInMonth()
+  const updateMonthDays = (day, month, year) => {
+    const date = moment(`${day}/${month}/${year}`, 'DD/MM/YYYY')
     const daysArray = []
 
-    for (let day=1; day <= daysInMonth; day++) {
+    for (let day=1; day <= date.daysInMonth(); day++) {
       daysArray.push({ option: day, value: day })
     }
 
+    setDay(day - 1)
     setDays(daysArray)
   }
 
   useEffect(() => {
-    // Don't do anything if it's a create
-    if (!props.id) return updateMonthDays()
-
-    const date = moment(props.expiry)
+    const date = props.expiry ? moment(props.expiry) : moment()
     const yearIndex = years.map(y => y.value).indexOf(parseInt(date.format('YYYY')))
 
-    setId(props.id)
-    setTitle(props.title)
-    setDescription(props.description)
-    setOptions(props.options)
-    setDay(date.format('D') - 1)
-    setMonth(date.format('M') - 1)
-    setYear(yearIndex == -1 ? 0 : yearIndex)
-    updateMonthDays()
+    // Always rnu this
+    updateMonthDays(date.format('DD'), date.format('MM'), date.format('YYYY'))
+
+    // Update these values if we're updating
+    if (props.id) {
+      setId(props.id)
+      setTitle(props.title)
+      setDescription(props.description)
+      setOptions(props.options)
+      setDay(date.format('D') - 1)
+      setMonth(date.format('M') - 1)
+      setYear(yearIndex == -1 ? 0 : yearIndex)
+    }
   }, [])
 
   return (
@@ -146,7 +146,7 @@ export default function FormComponent(props) {
                   inputSize="large"
                   onChange={e => updateOption(e.target.value, option.id)}
                 />
-              <Trash
+                <Trash
                   color="#ACB5BD"
                   size="20"
                   thickness="1.5"
@@ -176,7 +176,10 @@ export default function FormComponent(props) {
                 <Select
                   selected={month}
                   size="large"
-                  onSelect={(index) => setMonth(index)}
+                  onSelect={(index) => {
+                    setMonth(index)
+                    updateMonthDays(1, months[index].value, years[year].value)
+                  }}
                   options={months}
                 />
               </div>
@@ -186,7 +189,10 @@ export default function FormComponent(props) {
                 <Select
                   selected={year}
                   size="large"
-                  onSelect={(index) => setYear(index)}
+                  onSelect={(index) => {
+                    setYear(index)
+                    updateMonthDays(1, months[month].value, years[index].value)
+                  }}
                   options={years}
                 />
               </div>
