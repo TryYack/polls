@@ -11,22 +11,41 @@ import FormComponent from '../components/form.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { closeAppModal } from '@tryyack/dev-kit'
 
-const ADD_POLL = gql`
-  mutation add_poll($objects: [polls_insert_input!]!) {
-    insert_polls(objects: $objects) {
-      returning {
-        id
-        title
-      }
-    }
-  }
-`;
-
 function Create(props) {
   const { router: { query }} = props
   const [userId, setUserId] = useState(query.userId)
   const [token, setToken] = useState(query.token)
-  const [addPoll, { data, error, loading }] = useMutation(ADD_POLL)
+  const [addPoll, { data, error, loading }] = useMutation(gql`
+    mutation add_poll($objects: [polls_insert_input!]!) {
+      insert_polls(objects: $objects) {
+        returning {
+          id
+          title
+        }
+      }
+    }
+  `)
+
+  const onSubmit = (title, description, options, expiry) => {
+    addPoll({
+      variables: {
+        objects: [
+          {
+            title,
+            description,
+            options,
+            expiry,
+            channel_token: token,
+            user_id: userId
+          }
+        ]
+      }
+    })
+
+    // And then close the modal
+    // BUT NOT NOW
+    // closeAppModal()
+  }
 
   return (
     <React.Fragment>
@@ -114,25 +133,7 @@ function Create(props) {
             currentUserId={userId}
             description={null}
             options={null}
-            onSubmit={(title, description, options, expiry) => {
-              addPoll({
-                variables: {
-                  objects: [
-                    {
-                      title,
-                      description,
-                      options,
-                      expiry,
-                      channel_token: token,
-                      user_id: userId
-                    }
-                  ]
-                }
-              })
-
-              // And then close the modal
-              closeAppModal()
-            }}
+            onSubmit={onSubmit}
           />
         </div>
       }
