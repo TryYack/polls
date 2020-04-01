@@ -7,23 +7,21 @@ import { Error } from '@tryyack/elements'
 import gql from 'graphql-tag'
 import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@tryyack/dev-kit'
 
-const DELETE_POLL = gql`
-  mutation delete_polls($id: Int) {
-    delete_polls(
-      where: {id: {_eq: $id}}
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
   const [total, setTotal] = useState(0)
   const [highest, setHighest] = useState(0)
   const [expired, setExpired] = useState(0)
   const [error, setError] = useState(null)
-  const [deletePoll, deleteData] = useMutation(DELETE_POLL)
+  const [deletePoll, deleteData] = useMutation(gql`
+    mutation delete_polls($id: Int) {
+      delete_polls(
+        where: {id: {_eq: $id}}
+      ) {
+        affected_rows
+      }
+    }
+  `)
 
   const sharePoll = async () => {
     const channelToken = props.token
@@ -53,7 +51,10 @@ export default function PollComponent(props) {
       const channelToken = props.token
       const resourceId = props.id
 
+      // Delete the poll from Hasura
       deletePoll({ variables: { id: resourceId } })
+
+      // Remove the poll from all message object
       deleteChannelMessagesWithResourceId(channelToken, resourceId)
     }
   }
