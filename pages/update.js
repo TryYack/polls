@@ -10,29 +10,25 @@ import PollComponent from '../components/poll.component'
 import FormComponent from '../components/form.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 
-const UPDATE_POLL = gql`
-  mutation update_polls($id: Int, $changes: polls_set_input) {
-    update_polls(
-      where: {id: {_eq: $id}},
-      _set: $changes
-    ) {
-      affected_rows
-      returning {
-        id
-        title
-        description
-      }
-    }
-  }
-`;
-
 function Update(props) {
   const { router } = props
+  const { userId, pollId, token } = router.query
   const [notification, setNotification] = useState(null)
-  const [userId, setUserId] = useState(router.query.userId)
-  const [token, setToken] = useState(router.query.token)
-  const [pollId, setPollId] = useState(router.query.pollId)
-  const [updatePoll, { data }] = useMutation(UPDATE_POLL)
+  const [updatePoll, { data }] = useMutation(gql`
+    mutation update_polls($id: Int, $changes: polls_set_input) {
+      update_polls(
+        where: {id: {_eq: $id}},
+        _set: $changes
+      ) {
+        affected_rows
+        returning {
+          id
+          title
+          description
+        }
+      }
+    }
+  `)
   const [query, setQuery] = useState(gql`
     query {
       polls(where: { id: { _eq: ${pollId} } }) {
