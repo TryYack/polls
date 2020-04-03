@@ -8,25 +8,21 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { autoAdjustMessageHeight } from '@tryyack/dev-kit'
-
-const ADD_VOTE = gql`
-  mutation add_vote($objects: [poll_votes_insert_input!]!) {
-    insert_poll_votes(objects: $objects) {
-      returning {
-        id
-      }
-    }
-  }
-`;
+import { syncMessageHeight } from '@tryyack/dev-kit'
 
 function Message(props) {
-  // ?userId=5db7e3c98476242154d43181&channelId=5db87f04db059a6d8dc8d068
   const { router: { query }} = props
-  const [userId, setUserId] = useState(query.userId)
-  const [token, setToken] = useState(query.token)
-  const [pollId, setPollId] = useState(query.resourceId)
-  const [addVote, addVoteData] = useMutation(ADD_VOTE)
+  const { userId, token, resourceId, resizeId } = query
+  const pollId = resourceId
+  const [addVote, addVoteData] = useMutation(gql`
+    mutation add_vote($objects: [poll_votes_insert_input!]!) {
+      insert_poll_votes(objects: $objects) {
+        returning {
+          id
+        }
+      }
+    }
+  `)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { id: { _eq: ${pollId} } }) {
@@ -46,7 +42,7 @@ function Message(props) {
   `)
 
   useEffect(() => {
-    autoAdjustMessageHeight()
+    syncMessageHeight(resizeId)
   }, [])
 
   return (
