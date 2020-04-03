@@ -10,21 +10,18 @@ import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
-const ADD_VOTE = gql`
-  mutation add_vote($objects: [poll_votes_insert_input!]!) {
-    insert_poll_votes(objects: $objects) {
-      returning {
-        id
-      }
-    }
-  }
-`;
-
 function Index(props) {
   const { router: { query }} = props
-  const [userId, setUserId] = useState(query.userId)
-  const [token, setToken] = useState(query.token)
-  const [addVote, addVoteData] = useMutation(ADD_VOTE)
+  const { userId, token } = query
+  const [addVote, addVoteData] = useMutation(gql`
+    mutation add_vote($objects: [poll_votes_insert_input!]!) {
+      insert_poll_votes(objects: $objects) {
+        returning {
+          id
+        }
+      }
+    }
+  `)
   const { loading, error, data } = useSubscription(gql`
     subscription {
       polls(where: { channel_token: { _eq: "${token}" } }) {
@@ -132,7 +129,7 @@ function Index(props) {
                           objects: [
                             {
                               option_id: optionId,
-                              poll_id: pollId,
+                              poll_id: poll.id,
                               user_id: userId,
                             }
                           ]
