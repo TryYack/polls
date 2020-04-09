@@ -43,25 +43,37 @@ export default function PollComponent(props) {
   }
 
   const updatePoll = async () => {
-    openAppModal('Update poll', 'http://localhost:3001/update?pollId=' + props.id, '50%', '80%', props.token)
+    try {
+      openAppModal('Update poll', 'http://localhost:3001/update?pollId=' + props.id, '50%', '80%', props.token)
+    } catch (e) {
+      setError('There was an error')
+    }
   }
 
   const confirmDeletePoll = async () => {
-    if (confirm("Are you sure?")) {
-      const channelToken = props.token
-      const resourceId = props.id
+    try {
+      if (confirm("Are you sure?")) {
+        const channelToken = props.token
+        const resourceId = props.id
 
-      // Delete the poll from Hasura
-      deletePoll({ variables: { id: resourceId } })
+        // Delete the poll from Hasura
+        deletePoll({ variables: { id: resourceId } })
 
-      // Remove the poll from all message object
-      deleteChannelMessagesWithResourceId(channelToken, resourceId)
+        // Remove the poll from all message object
+        deleteChannelMessagesWithResourceId(channelToken, resourceId)
+      }
+    } catch (e) {
+      setError('There was an error')
     }
   }
 
   const voteOption = async (optionId) => {
-    props.onSubmit(optionId)
-    setComplete(true)
+    try {
+      props.onSubmit(optionId)
+      setComplete(true)
+    } catch (e) {
+      setError('There was an error')
+    }
   }
 
   useEffect(() => {
