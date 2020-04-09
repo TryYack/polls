@@ -24,12 +24,12 @@ export default function PollComponent(props) {
   `)
 
   const sharePoll = async () => {
-    const channelToken = props.token
-    const message = 'Here is a poll'
-    const attachments = null
-    const resourceId = props.id
-
     try {
+      const channelToken = props.token
+      const message = 'Here is a poll'
+      const attachments = null
+      const resourceId = props.id
+
       await createChannelMessage(
         channelToken,
         message,

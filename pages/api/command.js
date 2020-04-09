@@ -1,6 +1,7 @@
 import Cors from 'cors'
 import moment from 'moment'
 import axios from 'axios'
+import { createChannelMessage } from '@tryyack/dev-kit'
 
 // Initializing the cors middleware
 const cors = Cors({
@@ -28,9 +29,12 @@ async function handler(req, res) {
 
   const { body, query } = req
   const { userId, token } = query
+  const channelToken = token
   const { userCommand: { commandName, commandQuery } } = body
   const commandQueryParts = commandQuery.split(',')
   const title = commandQueryParts[0]
+  const message = 'Here is a poll'
+  const attachments = null
   const description = commandQueryParts[1]
   const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
   const options = commandQueryParts
@@ -44,7 +48,7 @@ async function handler(req, res) {
 
   // Make a manual GRaphQL request
   // Bit of a hack - but saves having to jump through the GQL-via-server hoops
-  await axios({
+  const poll = await axios({
     url: 'https://yack-apps.herokuapp.com/v1/graphql',
     method: 'post',
     data: {
@@ -56,7 +60,7 @@ async function handler(req, res) {
             "description": description,
             "options": options,
             "expiry": expiry,
-            "channel_token": token,
+            "channel_token": channelToken,
             "user_id": userId
           }
         ]
@@ -75,13 +79,33 @@ async function handler(req, res) {
       `
     }
   })
-  console.log(poll)
 
-  // Rest of the API logic
+  // We just need the ID really - TODO: make failure less likely here
+  const { id } = poll.data.data.insert_polls.returning[0]
+  const resourceId = id
+
+  // Here we recreate the DEvKit functionality
+  // TODO: Add NodeJS support for DevKit & isomorphic FETCH
+  // All this is less than ideal
+  const WEBHOOK_URL = "http://localhost:8181/v1/webhook"
+  const appToken = 'd91c6fcd-2c59-4200-9919-c1a52ed1ee3d'
+
+  // Make the request
+  await axios({
+    url: `${WEBHOOK_URL}/${channelToken}`,
+    method: 'post',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "bearer " + appToken,
+    },
+    data: JSON.stringify({ message, attachments, resourceId })
+  })
+
+  // All is good
   res.json({ success: true })
 } catch (e) {
   console.log(e)
-  res.json({ error: true })
+  res.json({ error: e })
 }
 }
 
