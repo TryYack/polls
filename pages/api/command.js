@@ -1,7 +1,7 @@
 import Cors from 'cors'
 import moment from 'moment'
 import axios from 'axios'
-import { createChannelMessage } from '@tryyack/dev-kit'
+import { createChannelMessage } from '@yack/dev-kit'
 
 // Initializing the cors middleware
 const cors = Cors({
