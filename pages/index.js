@@ -42,7 +42,7 @@ function Index(props) {
 
   // This needs to run inside window
   useEffect(() => {
-    initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d')
+    initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d', true)
   }, [])
 
   return (
