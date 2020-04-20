@@ -9,13 +9,26 @@ var WebSocketClient = require('websocket').client
 const wsLink = new WebSocketLink({
   uri: `ws://hasura.yack.co/v1/graphql`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: () => {
+      return {
+        headers: {
+          'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+        },
+      }
+    },
   },
   webSocketImpl: WebSocketClient
 })
 
 const httpLink = new HttpLink({
   uri: 'https://hasura.yack.co/v1/graphql',
+  opts: {
+    credentials: 'include',
+    headers: {
+      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+    },
+  }
 })
 
 const link = split(
