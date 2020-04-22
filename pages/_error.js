@@ -46,7 +46,7 @@ export default function Error(props) {
 
       <div className="error">
         <div className="logo">
-          <img src="../static/images/logo.png" height="20" alt="Yack"/>
+          <img src="https://yack-polls.s3.eu-west-3.amazonaws.com/logo.png" height="20" alt="Yack"/>
         </div>
 
         <div className="info">
