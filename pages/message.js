@@ -50,8 +50,8 @@ function Message(props) {
       <Head>
         <title>Polls</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link href="https://yack-polls.s3.eu-west-3.amazonaws.com/styles.css" rel="stylesheet" />
-        <link href="https://yack-polls.s3.eu-west-3.amazonaws.com/favicon.png" rel="shortcut icon" />
+        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
+        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
       </Head>
 
       <style global jsx>{`

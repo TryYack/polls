@@ -29,7 +29,9 @@
     "websocket": "^1.0.30",
     "ws": "^7.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "next-aws-lambda-webpack-plugin": "^0.1.7"
+  },
   "scripts": {
     "dev": "next -p 3001",
     "build": "next build",

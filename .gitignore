@@ -13,3 +13,4 @@ yarn-error.log
 *.bundle
 
 .next/
+out_lambda
