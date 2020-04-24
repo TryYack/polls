@@ -10,6 +10,8 @@ import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { initDevKit, openAppModal } from '@tryyack/dev-kit'
 
+const isWindowContext = typeof window !== 'undefined'
+
 function Index(props) {
   const { router: { query }} = props
   const { userId, token } = query
@@ -42,7 +44,9 @@ function Index(props) {
 
   // This needs to run inside window
   useEffect(() => {
-    initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d', true)
+    if (isWindowContext) {
+      initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d', true)
+    }
   }, [])
 
   return (
