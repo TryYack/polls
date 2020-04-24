@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@yack/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@tryyack/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { syncMessageHeight } from '@yack/dev-kit'
+import { syncMessageHeight } from '@tryyack/dev-kit'
 
 function Message(props) {
   const { router: { query }} = props

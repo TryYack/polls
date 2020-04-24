@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Progress, Button } from '@yack/elements'
+import { Progress, Button } from '@tryyack/elements'
 import moment from 'moment'
 import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { Error } from '@yack/elements'
+import { Error } from '@tryyack/elements'
 import gql from 'graphql-tag'
-import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@yack/dev-kit'
+import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@tryyack/dev-kit'
 
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
