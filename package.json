@@ -29,10 +29,7 @@
     "websocket": "^1.0.30",
     "ws": "^7.2.0"
   },
-  "devDependencies": {
-    "next-aws-lambda-webpack-plugin": "^0.1.7",
-    "serverless-next.js": "^1.10.0-alpha.2"
-  },
+  "devDependencies": {},
   "scripts": {
     "dev": "next -p 3001",
     "build": "next build",

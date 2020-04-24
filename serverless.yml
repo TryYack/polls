@@ -1,4 +1,0 @@
-myNextApplication:
-  component: serverless-next.js
-  inputs:
-    domain: "polls.yack.co" # sub-domain defaults to www
