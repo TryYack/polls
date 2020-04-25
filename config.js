@@ -7,7 +7,7 @@ import ws from 'ws'
 var WebSocketClient = require('websocket').client
 
 const wsLink = new WebSocketLink({
-  uri: `ws://hasura.yack.co/v1/graphql`,
+  uri: process.env.GRAPHQL_WEBSOCKET,
   options: {
     reconnect: true,
     connectionParams: () => {
@@ -22,7 +22,7 @@ const wsLink = new WebSocketLink({
 })
 
 const httpLink = new HttpLink({
-  uri: 'https://hasura.yack.co/v1/graphql',
+  uri: process.env.GRAPHQL_ENDPOINT,
   opts: {
     credentials: 'include',
     headers: {
