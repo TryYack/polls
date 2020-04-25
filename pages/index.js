@@ -8,9 +8,7 @@ import { Query } from 'react-apollo'
 import withData from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { initDevKit, openAppModal } from '@tryyack/dev-kit'
-
-const isWindowContext = typeof window !== 'undefined'
+import { openAppModal } from '@tryyack/dev-kit'
 
 function Index(props) {
   const { router: { query }} = props
@@ -41,13 +39,6 @@ function Index(props) {
       }
     }
   `)
-
-  // This needs to run inside window
-  useEffect(() => {
-    if (isWindowContext) {
-      initDevKit('d91c6fcd-2c59-4200-9919-c1a52ed1ee3d', true)
-    }
-  }, [])
 
   return (
     <React.Fragment>
