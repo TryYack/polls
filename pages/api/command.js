@@ -23,95 +23,96 @@ function runMiddleware(req, res, fn) {
 
 async function handler(req, res) {
   try {
-  // Run the middleware
-  // To allow CORS
-  await runMiddleware(req, res, cors)
+    // Run the middleware
+    // To allow CORS
+    await runMiddleware(req, res, cors)
 
-  // Set these up - token here is the channelToken
-  const { body, query } = req
-  const { userId, token } = query
-  const channelToken = token
-  const { userCommand: { commandName, commandQuery } } = body
-  const commandQueryParts = commandQuery.split(',')
-  const title = commandQueryParts[0]
-  const message = 'Here is a poll'
-  const attachments = null
-  const description = commandQueryParts[1]
-  const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
-  const options = commandQueryParts
-    .splice(2, (commandQueryParts.length - 1))
-    .map((option, index) => {
-      return {
-        id: index,
-        text: option,
+    // Set these up - token here is the channelToken
+    const { body, query } = req
+    const { userId, token } = query
+    const channelToken = token
+    const { userCommand: { commandName, commandQuery } } = body
+    const commandQueryParts = commandQuery.split(',')
+    const title = commandQueryParts[0]
+    const message = 'Here is a poll'
+    const attachments = null
+    const description = commandQueryParts[1]
+    const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
+    const options = commandQueryParts
+      .splice(2, (commandQueryParts.length - 1))
+      .map((option, index) => {
+        return {
+          id: index,
+          text: option,
+        }
+      })
+
+    // Make a manual GRaphQL request
+    // Bit of a hack - but saves having to jump through the GQL-via-server hoops
+    const poll = await axios({
+      url: 'https://yack-apps.herokuapp.com/v1/graphql',
+      method: 'post',
+      data: {
+        "operationName": "add_poll",
+        "variables": {
+          "objects": [
+            {
+              "title": title,
+              "description": description,
+              "options": options,
+              "expiry": expiry,
+              "channel_token": channelToken,
+              "user_id": userId
+            }
+          ]
+        },
+        "query": `
+          mutation add_poll($objects: [polls_insert_input!]!) {
+            insert_polls(objects: $objects) {
+              returning {
+                id
+                title
+                __typename
+              }
+              __typename
+            }
+          }
+        `
       }
     })
 
-  // Make a manual GRaphQL request
-  // Bit of a hack - but saves having to jump through the GQL-via-server hoops
-  const poll = await axios({
-    url: 'https://yack-apps.herokuapp.com/v1/graphql',
-    method: 'post',
-    data: {
-      "operationName": "add_poll",
-      "variables": {
-        "objects": [
-          {
-            "title": title,
-            "description": description,
-            "options": options,
-            "expiry": expiry,
-            "channel_token": channelToken,
-            "user_id": userId
-          }
-        ]
+    // We just need the ID really - TODO: make failure less likely here
+    const { id } = poll.data.data.insert_polls.returning[0]
+    const resourceId = id
+
+    // Here we recreate the DEvKit functionality
+    // TODO: Add NodeJS support for DevKit & isomorphic FETCH
+    // All this is less than ideal
+    const WEBHOOK_URL = process.env.NODE_ENV == 'dev'
+      ? 'http://localhost:8181/v1/webhook'
+      : 'https://api.yack.co/v1/webhook'
+
+    // App token is manually set from the appstore
+    const appToken = process.env.APP_TOKEN
+
+    // Make the request manually
+    // We usualll use DevKit for this
+    // But we need to do it on the server side
+    await axios({
+      url: `${WEBHOOK_URL}/${channelToken}`,
+      method: 'post',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "bearer " + appToken,
       },
-      "query": `
-        mutation add_poll($objects: [polls_insert_input!]!) {
-          insert_polls(objects: $objects) {
-            returning {
-              id
-              title
-              __typename
-            }
-            __typename
-          }
-        }
-      `
-    }
-  })
+      data: JSON.stringify({ message, attachments, resourceId })
+    })
 
-  // We just need the ID really - TODO: make failure less likely here
-  const { id } = poll.data.data.insert_polls.returning[0]
-  const resourceId = id
-
-  // Here we recreate the DEvKit functionality
-  // TODO: Add NodeJS support for DevKit & isomorphic FETCH
-  // All this is less than ideal
-  const WEBHOOK_URL = process.env.NODE_ENV == 'dev'
-    ? 'http://localhost:8181/v1/webhook'
-    : 'https://api.yack.co/v1/webhook'
-
-  // App token is manually set from the appstore
-  const appToken = process.env.APP_TOKEN
-
-  // Make the request
-  await axios({
-    url: `${WEBHOOK_URL}/${channelToken}`,
-    method: 'post',
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "bearer " + appToken,
-    },
-    data: JSON.stringify({ message, attachments, resourceId })
-  })
-
-  // All is good
-  res.json({ success: true })
-} catch (e) {
-  console.log(e)
-  res.json({ error: e })
-}
+    // All is good
+    res.json({ success: true })
+  } catch (e) {
+    res.json({ error: e })
+  }
 }
 
 export default handler
