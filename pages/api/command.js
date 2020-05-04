@@ -38,6 +38,9 @@ async function handler(req, res) {
     const attachments = null
     const description = commandQueryParts[1]
     const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
+
+    // Create an options data object that will be compatible with the DB
+    // ... which is just plain JSON
     const options = commandQueryParts
       .splice(2, (commandQueryParts.length - 1))
       .map((option, index) => {
@@ -49,6 +52,7 @@ async function handler(req, res) {
 
     // Make a manual GRaphQL request
     // Bit of a hack - but saves having to jump through the GQL-via-server hoops
+    // Just to get 1 call going
     const poll = await axios({
       url: 'https://yack-apps.herokuapp.com/v1/graphql',
       method: 'post',
