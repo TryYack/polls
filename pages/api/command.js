@@ -24,8 +24,10 @@ function runMiddleware(req, res, fn) {
 async function handler(req, res) {
   try {
   // Run the middleware
+  // To allow CORS
   await runMiddleware(req, res, cors)
 
+  // Set these up - token here is the channelToken
   const { body, query } = req
   const { userId, token } = query
   const channelToken = token
@@ -86,8 +88,12 @@ async function handler(req, res) {
   // Here we recreate the DEvKit functionality
   // TODO: Add NodeJS support for DevKit & isomorphic FETCH
   // All this is less than ideal
-  const WEBHOOK_URL = "http://localhost:8181/v1/webhook"
-  const appToken = 'd91c6fcd-2c59-4200-9919-c1a52ed1ee3d'
+  const WEBHOOK_URL = process.env.NODE_ENV == 'dev'
+    ? 'http://localhost:8181/v1/webhook'
+    : 'https://api.yack.co/v1/webhook'
+
+  // App token is manually set from the appstore
+  const appToken = process.env.APP_TOKEN
 
   // Make the request
   await axios({
