@@ -98,7 +98,7 @@ function Index(props) {
             <React.Fragment>
               {(data.polls.length == 0) &&
                 <React.Fragment>
-                  <img src=".https://yack-apps.s3.eu-central-1.amazonaws.com/no-polls.png" width="60%" className="mb-30"/>
+                  <img src="https://yack-apps.s3.eu-central-1.amazonaws.com/no-polls.png" width="60%" className="mb-30"/>
                   <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
                   <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
                 </React.Fragment>
