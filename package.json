@@ -32,9 +32,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "next -p 3001",
+    "dev": "next -p 3002",
     "build": "next build",
-    "start": "next start -p 3001"
+    "start": "next start -p 3002"
   },
   "author": "Jo du Plessis",
   "license": "MIT"
