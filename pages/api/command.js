@@ -92,7 +92,7 @@ async function handler(req, res) {
     // Here we recreate the DEvKit functionality
     // TODO: Add NodeJS support for DevKit & isomorphic FETCH
     // All this is less than ideal
-    const WEBHOOK_URL = process.env.NODE_ENV == 'dev'
+    const WEBHOOK_URL = process.env.NODE_ENV == 'development'
       ? 'http://localhost:8181/v1/webhook'
       : 'https://api.yack.co/v1/webhook'
 

@@ -23,12 +23,10 @@ const wsLink = new WebSocketLink({
 
 const httpLink = new HttpLink({
   uri: process.env.GRAPHQL_ENDPOINT,
-  opts: {
-    credentials: 'include',
-    headers: {
-      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-    },
-  }
+  credentials: 'include',
+  headers: {
+    'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+  },
 })
 
 const link = split(

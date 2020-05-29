@@ -144,7 +144,11 @@ function Index(props) {
               theme="blue-border"
               text="Create a new poll"
               onClick={() => {
-                openAppModal('Create a poll', 'http://localhost:3001/create', '50%', '80%', token)
+                if (window.location.hostname == 'localhost') {
+                  openAppModal('Create a poll', 'http://localhost:3002/create', '50%', '80%', token)
+                } else {
+                  openAppModal('Create a poll', 'https://polls.yack.co/create', '50%', '80%', token)
+                }
               }}
             />
           </div>
