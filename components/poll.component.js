@@ -29,12 +29,14 @@ export default function PollComponent(props) {
       const message = 'Here is a poll'
       const attachments = null
       const resourceId = props.id
+      const { userId } = props
 
       await createChannelMessage(
         channelToken,
         message,
         attachments,
-        resourceId
+        resourceId,
+        userId
       )
     } catch (e) {
       setError('Could not share poll')

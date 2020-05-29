@@ -35,7 +35,7 @@ async function handler(req, res) {
     const commandQueryParts = commandQuery.split(',')
     const title = commandQueryParts[0]
     const message = 'Here is a poll'
-    const attachments = null
+    const attachments = []
     const description = commandQueryParts[1]
     const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
 
@@ -56,6 +56,9 @@ async function handler(req, res) {
     const poll = await axios({
       url: 'https://yack-apps.herokuapp.com/v1/graphql',
       method: 'post',
+      headers: {
+        'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+      },
       data: {
         "operationName": "add_poll",
         "variables": {
@@ -109,7 +112,7 @@ async function handler(req, res) {
         "Content-Type": "application/json",
         "Authorization": "bearer " + appToken,
       },
-      data: JSON.stringify({ message, attachments, resourceId })
+      data: JSON.stringify({ body: message, attachments, resourceId, userId })
     })
 
     // All is good
