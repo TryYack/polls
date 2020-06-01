@@ -27,7 +27,7 @@ export default function PollComponent(props) {
     try {
       const channelToken = props.token
       const message = 'Here is a poll'
-      const attachments = null
+      const attachments = []
       const resourceId = props.id
       const { userId } = props
 
@@ -36,7 +36,7 @@ export default function PollComponent(props) {
         message,
         attachments,
         resourceId,
-        userId
+        userId,
       )
     } catch (e) {
       setError('Could not share poll')
