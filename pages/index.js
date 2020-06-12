@@ -149,7 +149,7 @@ function Index(props) {
                 if (window.location.hostname == 'localhost') {
                   openAppModal('Create a poll', 'http://localhost:3002/create', '50%', '80%', token)
                 } else {
-                  openAppModal('Create a poll', 'https://polls.yack.co/create', '50%', '80%', token)
+                  openAppModal('Create a poll', 'https://app-polls.yack.co/create', '50%', '80%', token)
                 }
               }}
             />

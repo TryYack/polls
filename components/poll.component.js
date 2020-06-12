@@ -49,7 +49,7 @@ export default function PollComponent(props) {
       if (window.location.hostname == 'localhost') {
         openAppModal('Update poll', 'http://localhost:3002/update?pollId=' + props.id, '50%', '80%', props.token)
       } else {
-        openAppModal('Update poll', 'https://polls.yack.co/update?pollId=' + props.id, '50%', '80%', props.token)
+        openAppModal('Update poll', 'https://app-polls.yack.co/update?pollId=' + props.id, '50%', '80%', props.token)
       }
     } catch (e) {
       setError('There was an error')

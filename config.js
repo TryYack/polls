@@ -8,13 +8,6 @@ var WebSocketClient = require('websocket').client
 import { HASURA_GRAPHQL_ADMIN_SECRET, GRAPHQL_ENDPOINT, APP_TOKEN, GRAPHQL_WEBSOCKET } from './environment'
 
 export const WebSocketSetup = () => {
-  console.log(
-    GRAPHQL_WEBSOCKET,
-    HASURA_GRAPHQL_ADMIN_SECRET,
-    GRAPHQL_ENDPOINT,
-    APP_TOKEN
-  )
-
   const wsLink = new WebSocketLink({
     uri: GRAPHQL_WEBSOCKET,
     options: {
