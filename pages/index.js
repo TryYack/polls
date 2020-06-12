@@ -5,10 +5,12 @@ import fetch from 'isomorphic-unfetch'
 import { Button, Error, Loading, Notification, Spinner } from '@tryyack/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
-import withData from '../config'
+import { WebSocketSetup } from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { openAppModal } from '@tryyack/dev-kit'
+
+const withData = WebSocketSetup()
 
 function Index(props) {
   const { router: { query }} = props
