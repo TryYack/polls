@@ -1,6 +1,7 @@
 import Cors from 'cors'
 import moment from 'moment'
 import axios from 'axios'
+import { HASURA_GRAPHQL_ADMIN_SECRET, GRAPHQL_ENDPOINT, APP_TOKEN, GRAPHQL_WEBSOCKET } from '../../environment'
 
 // Initializing the cors middleware
 const cors = Cors({
@@ -54,10 +55,10 @@ async function handler(req, res) {
     // Bit of a hack - but saves having to jump through the GQL-via-server hoops
     // Just to get 1 call going
     const poll = await axios({
-      url: 'https://yack-apps.herokuapp.com/v1/graphql',
+      url: GRAPHQL_ENDPOINT,
       method: 'post',
       headers: {
-        'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+        'x-hasura-admin-secret': HASURA_GRAPHQL_ADMIN_SECRET,
       },
       data: {
         "operationName": "add_poll",
@@ -100,7 +101,7 @@ async function handler(req, res) {
       : 'https://api.yack.co/v1/webhook'
 
     // App token is manually set from the appstore
-    const appToken = process.env.APP_TOKEN
+    const appToken = APP_TOKEN
 
     // Make the request manually
     // We usualll use DevKit for this

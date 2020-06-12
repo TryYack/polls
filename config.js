@@ -5,23 +5,24 @@ import { split } from 'apollo-link'
 import { getMainDefinition } from 'apollo-utilities'
 import ws from 'ws'
 var WebSocketClient = require('websocket').client
+import { HASURA_GRAPHQL_ADMIN_SECRET, GRAPHQL_ENDPOINT, APP_TOKEN, GRAPHQL_WEBSOCKET } from './environment'
 
 export const WebSocketSetup = () => {
   console.log(
-    process.env.GRAPHQL_WEBSOCKET,
-    process.env.HASURA_GRAPHQL_ADMIN_SECRET,
-    process.env.GRAPHQL_ENDPOINT,
-    process.env.APP_TOKEN
+    GRAPHQL_WEBSOCKET,
+    HASURA_GRAPHQL_ADMIN_SECRET,
+    GRAPHQL_ENDPOINT,
+    APP_TOKEN
   )
 
   const wsLink = new WebSocketLink({
-    uri: process.env.GRAPHQL_WEBSOCKET,
+    uri: GRAPHQL_WEBSOCKET,
     options: {
       reconnect: true,
       connectionParams: () => {
         return {
           headers: {
-            'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+            'x-hasura-admin-secret': HASURA_GRAPHQL_ADMIN_SECRET,
           },
         }
       },
@@ -30,10 +31,10 @@ export const WebSocketSetup = () => {
   })
   
   const httpLink = new HttpLink({
-    uri: process.env.GRAPHQL_ENDPOINT,
+    uri: GRAPHQL_ENDPOINT,
     credentials: 'include',
     headers: {
-      'x-hasura-admin-secret': process.env.HASURA_GRAPHQL_ADMIN_SECRET,
+      'x-hasura-admin-secret': HASURA_GRAPHQL_ADMIN_SECRET,
     },
   })
   
