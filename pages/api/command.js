@@ -98,7 +98,7 @@ async function handler(req, res) {
     // All this is less than ideal
     const WEBHOOK_URL = process.env.NODE_ENV == 'development'
       ? 'http://localhost:8181/v1/webhook'
-      : 'https://api.yack.co/v1/webhook'
+      : 'https://api.weekdayapp.com/v1/webhook'
 
     // App token is manually set from the appstore
     const appToken = APP_TOKEN

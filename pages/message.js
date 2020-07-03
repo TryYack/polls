@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@tryyack/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@weekday/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import { WebSocketSetup } from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { syncMessageHeight } from '@tryyack/dev-kit'
+import { syncMessageHeight } from '@weekday/dev-kit'
 
 const withData = WebSocketSetup()
 
@@ -52,8 +52,8 @@ function Message(props) {
       <Head>
         <title>Polls</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
-        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
+        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
+        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
         <link href="/static/css/styles.css" rel="stylesheet" />
       </Head>
 

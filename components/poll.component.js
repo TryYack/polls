@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Progress, Button } from '@tryyack/elements'
+import { Progress, Button } from '@weekday/elements'
 import moment from 'moment'
 import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { Error } from '@tryyack/elements'
+import { Error } from '@weekday/elements'
 import gql from 'graphql-tag'
-import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@tryyack/dev-kit'
+import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@weekday/dev-kit'
 
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
@@ -49,7 +49,7 @@ export default function PollComponent(props) {
       if (window.location.hostname == 'localhost') {
         openAppModal('Update poll', 'http://localhost:3002/update?pollId=' + props.id, '50%', '80%', props.token)
       } else {
-        openAppModal('Update poll', 'https://app-polls.yack.co/update?pollId=' + props.id, '50%', '80%', props.token)
+        openAppModal('Update poll', 'https://app-polls.weekdayapp.com/update?pollId=' + props.id, '50%', '80%', props.token)
       }
     } catch (e) {
       setError('There was an error')

@@ -1,5 +1,5 @@
 # Polls
-### Polls app for the Yack platform
+### Polls app for the Weekday platform
 
 ## Installation
 Clone the repo and run of of these commands inside the folder.

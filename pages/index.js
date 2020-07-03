@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter, withRouter } from 'next/router'
 import Head from 'next/head'
 import fetch from 'isomorphic-unfetch'
-import { Button, Error, Loading, Notification, Spinner } from '@tryyack/elements'
+import { Button, Error, Loading, Notification, Spinner } from '@weekday/elements'
 import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import { WebSocketSetup } from '../config'
 import PollComponent from '../components/poll.component'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
-import { openAppModal } from '@tryyack/dev-kit'
+import { openAppModal } from '@weekday/dev-kit'
 
 const withData = WebSocketSetup()
 
@@ -47,8 +47,8 @@ function Index(props) {
       <Head>
         <title>Polls</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
-        <link href="https://yack-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
+        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
+        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
         <link href="/static/css/styles.css" rel="stylesheet" />
       </Head>
 
@@ -101,7 +101,7 @@ function Index(props) {
             <React.Fragment>
               {(data.polls.length == 0) &&
                 <React.Fragment>
-                  <div className="mb-20 pl-20 pr-20 text-center"><img src="https://yack-apps.s3.eu-central-1.amazonaws.com/no-polls.png" width="60%" className="mb-30"/></div>
+                  <div className="mb-20 pl-20 pr-20 text-center"><img src="https://weekday-apps.s3.eu-central-1.amazonaws.com/no-polls.png" width="60%" className="mb-30"/></div>
                   <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
                   <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
                 </React.Fragment>
@@ -149,7 +149,7 @@ function Index(props) {
                 if (window.location.hostname == 'localhost') {
                   openAppModal('Create a poll', 'http://localhost:3002/create', '50%', '80%', token)
                 } else {
-                  openAppModal('Create a poll', 'https://app-polls.yack.co/create', '50%', '80%', token)
+                  openAppModal('Create a poll', 'https://app-polls.weekdayapp.com/create', '50%', '80%', token)
                 }
               }}
             />
