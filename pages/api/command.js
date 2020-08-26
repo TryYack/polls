@@ -93,9 +93,11 @@ async function handler(req, res) {
     const { id } = poll.data.data.insert_polls.returning[0]
     const resourceId = id
 
-    // Here we recreate the DEvKit functionality
+    // ⚠️ Here we recreate the DEvKit functionality
     // TODO: Add NodeJS support for DevKit & isomorphic FETCH
     // All this is less than ideal
+    // process.env.NODE_ENV is always development on local
+    // NextJS sets this
     const WEBHOOK_URL = process.env.NODE_ENV == 'development'
       ? 'http://localhost:8181/v1/webhook'
       : 'https://api.weekdayapp.com/v1/webhook'
