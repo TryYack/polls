@@ -53,8 +53,8 @@ function Update(props) {
       <Head>
         <title>Polls</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
-        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
+        <link href="https://weekday-apps.s3.us-west-2.amazonaws.com/styles.css" rel="stylesheet" />
+        <link href="https://weekday-apps.s3.us-west-2.amazonaws.com/favicon.png" rel="shortcut icon" />
         <link href="/static/css/styles.css" rel="stylesheet" />
       </Head>
 
@@ -114,7 +114,7 @@ function Update(props) {
               if (data.polls.length == 0) {
                 return (
                   <React.Fragment>
-                    <img src="https://weekday-apps.s3.eu-central-1.amazonaws.com/no-polls.png" width="60%" className="mb-30"/>
+                    <img src="https://weekday-apps.s3.us-west-2.amazonaws.com/no-polls.png" width="60%" className="mb-30"/>
                     <div className="h3 mb-20 pl-20 pr-20 color-d2 text-center">There are no polls</div>
                     <div className="h5 mb-20 pl-20 pr-20 color-d0 text-center">There are no polls for this channel. Click on the button below to create your first poll.</div>
 

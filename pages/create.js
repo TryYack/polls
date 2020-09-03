@@ -54,8 +54,8 @@ function Create(props) {
       <Head>
         <title>Poll</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/styles.css" rel="stylesheet" />
-        <link href="https://weekday-apps.s3.eu-central-1.amazonaws.com/favicon.png" rel="shortcut icon" />
+        <link href="https://weekday-apps.s3.us-west-2.amazonaws.com/styles.css" rel="stylesheet" />
+        <link href="https://weekday-apps.s3.us-west-2.amazonaws.com/favicon.png" rel="shortcut icon" />
         <link href="/static/css/styles.css" rel="stylesheet" />
       </Head>
 
@@ -120,7 +120,7 @@ function Create(props) {
 
       {data &&
         <div className="complete-container">
-          <img src="https://weekday-apps.s3.eu-central-1.amazonaws.com/check.png" width="100" className="mb-30"/>
+          <img src="https://weekday-apps.s3.us-west-2.amazonaws.com/check.png" width="100" className="mb-30"/>
           <div className="h3 mb-20 color-d2 text-center">Success</div>
           <div className="h5 color-d0 text-center">You have created a new poll!</div>
         </div>
