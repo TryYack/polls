@@ -99,8 +99,8 @@ async function handler(req, res) {
     // process.env.NODE_ENV is always development on local
     // NextJS sets this
     const WEBHOOK_URL = process.env.NODE_ENV == 'development'
-      ? 'http://localhost:8181/v1/webhook'
-      : 'https://api.weekdayapp.com/v1/webhook'
+      ? 'http://localhost:8181/v1/app/message'
+      : 'https://api.weekdayapp.com/v1/app/message'
 
     // App token is manually set from the appstore
     const appToken = APP_TOKEN
@@ -109,13 +109,13 @@ async function handler(req, res) {
     // We usualll use DevKit for this
     // But we need to do it on the server side
     await axios({
-      url: `${WEBHOOK_URL}/${channelToken}`,
+      url: WEBHOOK_URL,
       method: 'post',
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "bearer " + appToken,
+        "weekdayapp": appToken,
       },
-      data: JSON.stringify({ body: message, attachments, resourceId, userId })
+      data: JSON.stringify({ body: message, attachments, resourceId, userId, channelToken })
     })
 
     // All is good
