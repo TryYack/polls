@@ -70,7 +70,7 @@ function Message(props) {
 
         .container {
           background: white;
-          padding: 20px;
+          padding: 0px;
         }
 
         .error {
