@@ -35,8 +35,6 @@ async function handler(req, res) {
     const { userCommand: { commandName, commandQuery } } = body
     const commandQueryParts = commandQuery.split(',')
     const title = commandQueryParts[0]
-    const message = 'Here is a poll'
-    const attachments = []
     const description = commandQueryParts[1]
     const expiry = moment().add(1, 'months').format('YYYY-MM-DD 00:00:00')
 
@@ -51,10 +49,10 @@ async function handler(req, res) {
         }
       })
 
-    // Make a manual GRaphQL request
+    // Make a manual GraphQL request
     // Bit of a hack - but saves having to jump through the GQL-via-server hoops
-    // Just to get 1 call going
-    const poll = await axios({
+    // This should update the UI automagically because of Hasura/subscriptions
+    await axios({
       url: GRAPHQL_ENDPOINT,
       method: 'post',
       headers: {
@@ -87,35 +85,6 @@ async function handler(req, res) {
           }
         `
       }
-    })
-
-    // We just need the ID really - TODO: make failure less likely here
-    const { id } = poll.data.data.insert_polls.returning[0]
-    const resourceId = id
-
-    // ⚠️ Here we recreate the DEvKit functionality
-    // TODO: Add NodeJS support for DevKit & isomorphic FETCH
-    // All this is less than ideal
-    // process.env.NODE_ENV is always development on local
-    // NextJS sets this
-    const WEBHOOK_URL = process.env.NODE_ENV == 'development'
-      ? 'http://localhost:8181/v1/app/message'
-      : 'https://api.weekdayapp.com/v1/app/message'
-
-    // App token is manually set from the appstore
-    const appToken = APP_TOKEN
-
-    // Make the request manually
-    // We usualll use DevKit for this
-    // But we need to do it on the server side
-    await axios({
-      url: WEBHOOK_URL,
-      method: 'post',
-      headers: {
-        "Content-Type": "application/json",
-        "weekdayapp": appToken,
-      },
-      data: JSON.stringify({ body: message, attachments, resourceId, userId, channelToken })
     })
 
     // All is good
