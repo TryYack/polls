@@ -5,7 +5,7 @@ import fetch from 'isomorphic-unfetch'
 import { useMutation, useSubscription } from '@apollo/react-hooks'
 import { Error } from '@weekday/elements'
 import gql from 'graphql-tag'
-import { openAppModal, createChannelMessage, deleteChannelMessagesWithResourceId } from '@weekday/dev-kit'
+import { openAppModal, deleteChannelMessage, createChannelMessage } from '@weekday/dev-kit'
 
 export default function PollComponent(props) {
   const [complete, setComplete] = useState(false)
@@ -25,20 +25,19 @@ export default function PollComponent(props) {
 
   const sharePoll = async () => {
     try {
-      const channelToken = props.token
+      const token = props.token
       const message = 'Here is a poll'
       const attachments = []
       const resourceId = props.id
-      const { userId } = props
 
       await createChannelMessage(
-        channelToken,
+        token,
         message,
         attachments,
         resourceId,
-        userId,
       )
     } catch (e) {
+      console.log(e)
       setError('Could not share poll')
       setTimeout(() => setError(null), 5000)
     }
@@ -59,14 +58,14 @@ export default function PollComponent(props) {
   const confirmDeletePoll = async () => {
     try {
       if (confirm("Are you sure?")) {
-        const channelToken = props.token
+        const token = props.token
         const resourceId = props.id
 
         // Delete the poll from Hasura
         deletePoll({ variables: { id: resourceId } })
 
         // Remove the poll from all message object
-        deleteChannelMessagesWithResourceId(channelToken, resourceId)
+        deleteChannelMessage(token, resourceId)
       }
     } catch (e) {
       setError('There was an error')

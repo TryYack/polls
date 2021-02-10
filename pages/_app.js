@@ -5,7 +5,7 @@ import { HASURA_GRAPHQL_ADMIN_SECRET, GRAPHQL_ENDPOINT, APP_TOKEN, GRAPHQL_WEBSO
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     // true = DEV
-    // ⚠️ Remember to set this for true
+    // false = PROD
     initDevKit(APP_TOKEN, false)
   }, [])
 
